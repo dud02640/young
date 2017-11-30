@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="login">
+	<insert id="insertMember" parameterType="hashmap" >
+		insert into member
+		(
+			userId,
+			userPw,
+			userName,
+			userRank,
+			userPosition,
+			userEmail,
+			adminYn,
+			userImage,
+			userPhoneNumber,
+			createDate,
+			updateDate,
+			createUserId,
+			updateUserId,
+			userDeleteYn
+		)values
+		(
+			#{userId},
+			#{userPw},
+			#{userName},
+			#{userRank},
+			#{userPosition},
+			#{userEmail},
+			"N",
+			"N",
+			#{userPhoneNumber},
+			now(),
+			now(),
+			#{userId},
+			#{userId},
+			"N"
+		)
+	</insert>
+	<select id="checkId" parameterType="hashmap" resultType="int">
+		select ifnull(count(*),0)
+		  from member
+		 where userId = #{userId}
+	</select>
+	<select id ="selectCheckMember" parameterType="hashmap" resultType="hashmap">
+		SELECT *
+		  FROM MEMBER
+		 WHERE userId=#{userId}
+		   AND userPw=#{userPw}
+		   AND adminYn="Y"
+		   AND userDeleteYn="N"
+	</select>
+	<select id ="selectMemberList" parameterType="hashmap" resultType="hashmap">
+		SELECT *
+		  FROM MEMBER 
+		 <if test="searchkeyword != null || searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">where userName like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">where userId like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">where userPosition like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==4">where userRank like concat('%',#{searchkeyword},'%')</when>
+			 </choose> 
+		 </if>
+		 order by (case userDeleteYn
+		 		   when "N" then 1
+		 		   else 2
+		 		   end)
+		 limit #{currentpageDB},#{paging};
+	</select>
+	
+	<!-- join페이징 -->
+	<select id ="selectJoinList" parameterType="hashmap" resultType="hashmap">
+		 SELECT m.userId as loginUserId,
+				m.userName as loginUserName,
+				j.userId as joinUserId,
+				j.projectNo as joinProjectNo,
+				j.leaderYn as leaderYn
+		   FROM MEMBER m
+		   left outer join joinm j
+           on (m.userId = j.userId and j.projectNo=#{projectNo})
+		  where m.userDeleteYn="N"
+		    and m.adminYn ="N"
+		  <if test="searchkeyword != null"> <!-- 우선 or 로 빈칸체크 안됨 -->
+			and (m.userName like concat('%',#{searchkeyword},'%') or m.userId like concat('%',#{searchkeyword},'%'))
+		  </if>
+  		  order by (case leaderYn
+			  			when "Y" then 1
+	                    when "N" then 2
+	                    else 3
+                    end)
+		  limit #{currentpageDB},#{paging};
+	</select>
+	
+	<select id ="selectJoinCnt" parameterType="hashmap" resultType="int">
+	   SELECT count(*)
+		 FROM MEMBER 
+		 where userDeleteYn="N"
+		   and adminYn ="N"
+ 		<if test="searchkeyword != null"> 
+			and (userName like concat('%',#{searchkeyword},'%') or userId like concat('%',#{searchkeyword},'%'))
+		</if>
+	</select>
+	<!-- join페이징 -->
+	
+	<select id ="selectMemberCnt" parameterType="hashmap" resultType="int">
+	   SELECT count(*)
+		 FROM MEMBER 
+		 <if test="searchkeyword != null || searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">where userName like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">where userId like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">where userPosition like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==4">where userRank like concat('%',#{searchkeyword},'%')</when>
+			 </choose> 
+		 </if>
+	</select>
+	<select id ="selectMember" parameterType="hashmap" resultType="hashmap">
+	   SELECT *
+		 FROM MEMBER 
+		WHERE userId=#{userId}
+		  AND userPw=#{userPw}
+		  
+	</select>
+	<select id ="selectMemberinfo" parameterType="hashmap" resultType="hashmap">
+	   SELECT *
+		 FROM MEMBER 
+		WHERE userId=#{userId}
+	</select>
+	<update id ="updateMemberinfo" parameterType="hashmap" >
+	     update member
+			set	userId=#{gibonId},
+				userPw=#{userPw},
+				userName=#{userName},
+				userRank=#{userRank},
+				userPosition=#{userPosition},
+				userEmail=#{userEmail},
+				userPhoneNumber=#{userPhoneNumber},
+				updateDate=now(),
+				updateUserId=#{gibonId}
+		  where userId=#{gibonId};
+	</update>
+	<update id="deleteMemberinfo" parameterType="hashmap">
+		 update member
+			set	userDeleteYn="Y"
+		  where userId=#{gibonId};
+	</update>
+	<update id="multiDelete" parameterType="hashmap">
+		 update member
+			set	userDeleteYn="Y"
+		  where userId=#{chk};
+	</update>
+	
+</mapper>
