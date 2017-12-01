@@ -113,13 +113,14 @@ function refresh(){
 	frm.submit(); 
 	//location.reload(); //alert가 새로고침시 나오므로 x
 }
-function updateListModalIdPage(workNo){
+
+function updateCheckListModalView(workNo){
 	$("#workNo").val(workNo);
 
  	var frm =$("#projectDetailForm").serialize();/* document.getElementById('projectDetailForm'); */
  	$.ajax({
  		type:"POST",
- 		url:"/project/selectupdateListModalPage.do",
+ 		url:"/project/updateCheckListModalView.do",
  		data: frm,
  		success: function(data){
  		 	$("#updateCheckListModalId").empty();
@@ -127,6 +128,23 @@ function updateListModalIdPage(workNo){
  		},	
  	});
  }
+
+function updateWorkListModalView(workNo){
+	$("#workNo").val(workNo);
+
+ 	var frm =$("#projectDetailForm").serialize();/* document.getElementById('projectDetailForm'); */
+ 	$.ajax({
+ 		type:"POST",
+ 		url:"/project/updateWorkListModalView.do",
+ 		data: frm,
+ 		success: function(data){
+ 		 	$("#updateWorkListModalId").empty();
+ 		 	$("#updateWorkListModalId").append(data);
+ 		},	
+ 	});
+}
+ 
+ 
 function createcheckListModalIdPage(){
  	var frm =$("#projectDetailForm").serialize();/* document.getElementById('projectDetailForm'); */
  	$.ajax({
@@ -140,7 +158,7 @@ function createcheckListModalIdPage(){
  	});
  }
 function logout(){
-	var frm = document.getElementById('commonForm');
+	var frm = document.getElementById('projectDetailForm');
 		alert("로그아웃");
   		frm.action="/login/logout.do";
   		frm.submit();
@@ -194,6 +212,7 @@ function go_multidel(){
  			alert("삭제할 회원을 한 명 이상 선택하십시오.");
  		}
 }
+
 </script>
 </head>
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -449,12 +468,34 @@ function go_multidel(){
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-      	<h4 class="modal-title">업무 수정</h4>
+      	<h4 class="modal-title">체크리스트 수정</h4>
         <button type="button" class="close" data-dismiss="modal" onclick="refresh()"><span>x</span></button>
       </div>
       <input type="hidden" name="workNo" id="workNo"/>
       <div class="modal-body">
         <div id="updateCheckListModalId">
+      
+		</div>    
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="refresh()">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- updateCheckListModal -->
+
+<!-- updateWorkListModal -->
+<div class="modal fade" id="updateWorkListModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<h4 class="modal-title">업무 수정</h4>
+        <button type="button" class="close" data-dismiss="modal" onclick="refresh()"><span>x</span></button>
+      </div>
+      <input type="hidden" name="workNo" id="workNo"/>
+      <div class="modal-body">
+        <div id="updateWorkListModalId">
       
 		</div>    
       </div>
@@ -471,7 +512,8 @@ function go_multidel(){
     </div>
   </div>
 </div>
-<!-- updateCheckListModal -->
+<!-- updateWorkListModal -->
+
 <!-- checkListModal -->
 
 

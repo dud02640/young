@@ -52,7 +52,6 @@ public class loginController {
 		HttpSession session = req.getSession();
 		session.invalidate();
 		
-		
 		return "/login/login";
 	}
 	@RequestMapping(value = "/login/memberlist.do")
@@ -146,22 +145,27 @@ public class loginController {
 	
 	@RequestMapping(value = "/login/logincheck.do")
 	public String loginCheck(HttpServletRequest req,@RequestParam Map<String,Object> params ,Model model,HttpServletResponse response) throws IOException {
-		System.out.println(params);
+		String returnUrl="";
+		
 		Map<String,Object> logincheck = loginService.selectCheckMember(params);
 		 		
 		if(logincheck.get("userId").equals(params.get("userId"))&&logincheck.get("userPw").equals(params.get("userPw"))) {
 			HttpSession session=req.getSession();
 			session.setAttribute("userId",logincheck.get("userId"));
 			session.setAttribute("adminYn",logincheck.get("adminYn"));
-			return "forward:/project/main.do";
+			
+			System.out.println(session.getAttribute("uesrId"));
+			returnUrl= "redirect:/project/main.do";
+		}else {
+			response.setContentType("text/html; charset=utf-8");
+			PrintWriter out=response.getWriter();
+			out.println("<script>alert('회원정보를 정확히 입력하시오');</script>");
+			out.flush();
+			model.addAttribute("id", params.get("userId"));
+		
+			returnUrl= "redirect:/login/login";
 		}
-		response.setContentType("text/html; charset=utf-8");
-		PrintWriter out=response.getWriter();
-		out.println("<script>alert('회원정보를 정확히 입력하시오');</script>");
-		out.flush();
-		model.addAttribute("id", params.get("userId"));
-    	
-		return "/login/login";
+		return returnUrl;
 	}
 	@RequestMapping(value = "/login/updatememberView.do")
 	public String memberupdate(@RequestParam Map<String,Object> params, Model model) {
@@ -215,7 +219,54 @@ public class loginController {
 	}
 	
 	@RequestMapping(value = "/login/indivisualView.do")
-	public String indivisualView(@RequestParam Map<String,Object> params,HttpServletResponse response){
+	public String indivisualView(@RequestParam Map<String,Object> params,HttpServletResponse response,Model model){
+		
+		int currentpage=(params.get("selectPage")==null||params.get("selectPage")==""? 1:Integer.parseInt(params.get("selectPage").toString()));
+		int startpage=(params.get("startpage")==null? 1:1);
+		int endpageNo=(params.get("endpageNo")==null? 10:10);		//아래쪽 페이징 최대개수
+		int endpage = 0;
+		int currentpageDB=0;				//DB에서의 시작 컬럼 번호
+		int paging=10;						//한페이지당 list 컬럼의 수
+
+		/* 다음버튼 클릭시 첫페이지랑 마지막 페이지를 +10 */
+		if(endpageNo<currentpage) {
+			startpage=endpageNo+1;
+			endpageNo+=10;	
+		}
+		/* 이전버튼 클릭시 첫페이지를 -10 마지막 페이지는 startpage에서 +10 (endpageNo가 유동적으로 바뀌므로 startpage를 기준잡음)  */
+		else if(currentpage<startpage) {	
+			startpage-=10;
+			endpageNo=startpage+9;
+		}				
+
+		if(params.get("selectPage")==null||params.get("selectPage")=="") {
+			currentpageDB=0;
+			params.put("selectPage",startpage);
+		}else 
+			currentpageDB=Integer.parseInt(params.get("selectPage").toString())-1;
+		
+		params.put("paging",paging);
+		params.put("currentpageDB",currentpageDB*paging);				//0~9,10~19 10개씩 보여준다
+		params.put("startpage",startpage);
+		
+		List<Map<String,Object>> indivisualView = loginService.indivisualView(params);
+
+		int indivisualViewCnt= loginService.indivisualViewCnt(params);			//member 총인원
+
+		if(indivisualViewCnt%paging!=0)							//paging으로 나누었을떄 0 이면 나뉜 페이지 보여줌
+			endpage=indivisualViewCnt/paging+1;					//맴버 총 수에서 10을 나누고 나머지 페이지
+		else
+			endpage=indivisualViewCnt/paging;
+		
+		if(endpageNo>endpage) {
+			endpageNo=endpage;
+		}
+		params.put("currentpage", currentpage);
+		params.put("endpage",endpage);
+		params.put("endpageNo",endpageNo);
+
+		model.addAttribute("params",params);
+		model.addAttribute("indivisualView",indivisualView);
 		
 		return "/login/indivisual";
 	}

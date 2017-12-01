@@ -165,7 +165,13 @@ function searchMember(pIndex){
 												</c:if>
 										</c:forEach>
 										</div>
-										<div class="mr-3">진행률:80%</div>
+										<div class="mr-3">진행률:
+										<c:forEach var="WorkCheckList" items="${WorkCheckList}">
+											<c:if test="${list.projectNo == WorkCheckList.projectNo}">
+												${WorkCheckList.persent} %
+											</c:if>
+										</c:forEach>
+										</div>
 										<div class="mr-3">개발기간 : ${list.projectStartDate} ~
 											${list.projectEndDate}</div>
 									</div>

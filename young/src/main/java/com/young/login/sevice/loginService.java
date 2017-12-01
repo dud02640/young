@@ -30,4 +30,8 @@ public interface loginService {
 
 	int selectJoinCnt(Map<String, Object> params);
 
+	List<Map<String, Object>> indivisualView(Map<String, Object> params);
+
+	int indivisualViewCnt(Map<String, Object> params);
+
 }

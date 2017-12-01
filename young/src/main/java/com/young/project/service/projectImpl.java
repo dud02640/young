@@ -129,4 +129,22 @@ public class projectImpl implements projectService{
 		// TODO Auto-generated method stub
 		projectDAO.workCancel(params);
 	}
+
+	@Override
+	public Map<String, Object> updateWorkListModalView(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return  projectDAO.updateWorkListModalView(params);
+	}
+
+	@Override
+	public void updateCompleteWorkList(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		projectDAO.updateCompleteWorkList(params);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectWorkCheckList(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return projectDAO.selectWorkCheckList(params);
+	}
 }

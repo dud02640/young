@@ -85,4 +85,16 @@ public class loginServiceImpl implements loginService{
 		// TODO Auto-generated method stub
 		return loginDAO.selectJoinCnt(params);
 	}
+
+	@Override
+	public List<Map<String, Object>> indivisualView(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.indivisualView(params);
+	}
+
+	@Override
+	public int indivisualViewCnt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.indivisualViewCnt(params);
+	}
 }

@@ -81,7 +81,7 @@ public class projectController {
 		params.put("currentpageDB",currentpageDB*paging);				//0~9,10~19 10개씩 보여준다
 		params.put("startpage",startpage);
 		
-		
+		List<Map<String,Object>> WorkCheckList = projectService.selectWorkCheckList(params);
 		List<Map<String,Object>> list = projectService.selectBoardList(params);	
 		int selectboardlistcnt= projectService.selectBoardListCnt(params);			//member 총인원
 		
@@ -97,6 +97,8 @@ public class projectController {
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 		
+		
+		model.addAttribute("WorkCheckList",WorkCheckList);
 		model.addAttribute("JoinId",JoinId);
 		model.addAttribute("params", params);
 		model.addAttribute("list", list);
@@ -176,21 +178,29 @@ public class projectController {
 		HttpSession session = req.getSession();		
 		params.put("userId", session.getAttribute("userId"));
 		params.put("adminYn", session.getAttribute("adminYn"));
-
-		Map<String,Object> projectdetail = projectService.selectProjectDetail(params);
-		String projectContent=(String) projectdetail.get("projectContent");
-		projectContent = projectContent.replace("<br>","\n");
-	
-		List<Map<String,Object>> joinmember= joinService.joinMember(params);			
-		List<Map<String,Object>> projectLeader= joinService.projectLeader(params);		
+		session.setAttribute("projectNo", req.getParameter("projectNo"));
 		
-/*		model.addAttribute("selectWorkList",selectWorkList);*/
-		model.addAttribute("projectLeader",projectLeader);
-		model.addAttribute("joinmember",joinmember);
-		model.addAttribute("projectContent",projectContent);
-		model.addAttribute("projectdetail",projectdetail);
+		System.out.println("@@@@@@@@@"+params);
+		String sessionProjectNo = (String) session.getAttribute("projectNo");
+		if (sessionProjectNo == null || sessionProjectNo == ""){
+			return "forward:/project/main.do";
+		}else 
+		{
+			Map<String,Object> projectdetail = projectService.selectProjectDetail(params);
+			String projectContent=(String) projectdetail.get("projectContent");
+			projectContent = projectContent.replace("<br>","\n");
 		
-		return "/project/projectdetailview";
+			List<Map<String,Object>> joinmember= joinService.joinMember(params);			
+			List<Map<String,Object>> projectLeader= joinService.projectLeader(params);		
+			
+	/*		model.addAttribute("selectWorkList",selectWorkList);*/
+			model.addAttribute("projectLeader",projectLeader);
+			model.addAttribute("joinmember",joinmember);
+			model.addAttribute("projectContent",projectContent);
+			model.addAttribute("projectdetail",projectdetail);
+			return "/project/projectdetailview";
+		}
+		
 	}
 	
 	@RequestMapping(value = "/project/projectJoinList.do")
@@ -298,7 +308,7 @@ public class projectController {
 		
 		return "/project/createcheckListModal";	
 	}
-	@RequestMapping(value ="/project/selectupdateListModalPage.do")
+	@RequestMapping(value ="/project/updateCheckListModalView.do")
 	public ModelAndView updateListModalPage(@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) {
 		ModelAndView mav = new ModelAndView();
 		Map<String,Object> updateListModalPage= projectService.selectupdateListModalPage(params);
@@ -308,9 +318,25 @@ public class projectController {
 		return mav;	
 	}
 	
+	@RequestMapping(value ="/project/updateWorkListModalView.do")
+	public ModelAndView updateWorkListModalView(@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) {
+		ModelAndView mav = new ModelAndView();
+		Map<String,Object> updateWorkListModalView= projectService.updateWorkListModalView(params);
+		
+		mav.addObject("updateWorkListModalView", updateWorkListModalView);
+		mav.setViewName("/project/updateWorkListModal");
+		return mav;	
+	}
+	
 	@RequestMapping(value ="/project/checkListPage.do")
 	public ModelAndView checkListPage(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model) {
+		
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		params.put("adminYn", session.getAttribute("adminYn"));
+		
 		ModelAndView mav=new ModelAndView();
+		
 		int currentpage=(params.get("selectPage")==null||params.get("selectPage")==""? 1:Integer.parseInt(params.get("selectPage").toString()));
 		int startpage=(params.get("startpage")==null? 1:1);
 		int endpageNo=(params.get("endpageNo")==null? 10:10);		//아래쪽 페이징 최대개수
@@ -367,9 +393,13 @@ public class projectController {
 	
 	@RequestMapping(value ="/project/workListPage.do")
 	public ModelAndView workListPage(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model) {
-		System.out.println(params);
 		
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		params.put("adminYn", session.getAttribute("adminYn"));
+
 		ModelAndView mav=new ModelAndView();
+		
 		int currentpage=(params.get("selectPage")==null||params.get("selectPage")==""? 1:Integer.parseInt(params.get("selectPage").toString()));
 		int startpage=(params.get("startpage")==null? 1:1);
 		int endpageNo=(params.get("endpageNo")==null? 10:10);		//아래쪽 페이징 최대개수
@@ -457,6 +487,24 @@ public class projectController {
 		
 		return "forward:/project/projectDetailView.do";	
 	}
+	@RequestMapping(value ="/project/completeWorkList.do")
+	public String completeWorkList(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+		
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		
+		projectService.updateCompleteWorkList(params);
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/project/projectDetailView.do";	
+	}
+	
+	
 	@RequestMapping(value ="/project/medo.do")
 	public String medo(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
 		
@@ -473,6 +521,26 @@ public class projectController {
 		
 		return "forward:/project/projectDetailView.do";	
 	}
+	@RequestMapping(value ="/project/mutiDo.do")
+	public String mutiDo(@RequestParam("checkbox2")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+		
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		
+		for(String chk : checkbox) {
+			params.put("workNo", chk);
+			projectService.medo(params);
+		}
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/project/projectDetailView.do";	
+	}
+	
 	
 	@RequestMapping(value ="/project/workCancel.do")
 	public String workCancel(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
@@ -490,7 +558,27 @@ public class projectController {
 		
 		return "forward:/project/projectDetailView.do";	
 	}
+	
+	@RequestMapping(value ="/project/workMultiCancel.do")
+	public String workMultiCancel(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+		
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		
+		for(String chk : checkbox) {
+			params.put("workNo", chk);
+			projectService.workCancel(params);
+		}
 
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/project/projectDetailView.do";	
+	}
+	
 /*	//테스트//
 	@RequestMapping(value = "/project/projectDetailView2.do")
 	public String projectDetailView2(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model){		

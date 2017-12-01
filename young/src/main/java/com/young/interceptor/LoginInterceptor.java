@@ -23,7 +23,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter{
     	String userPw=(String) req.getSession().getAttribute("userPw");
 
     	try {
-            if(userId == null && userPw== null ){
+            if(userId == null ){
                     response.sendRedirect("/login/login.do");
 /*                	System.out.println("@@@@@@@@@@@@@"+userId);
                 	System.out.println(userPw);*/

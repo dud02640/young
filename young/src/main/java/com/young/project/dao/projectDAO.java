@@ -102,4 +102,19 @@ public class projectDAO extends AbstractDAO{
 		// TODO Auto-generated method stub
 		update("project.workCancel",params);
 	}
+
+	public Map<String, Object> updateWorkListModalView(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (Map<String, Object>) selectOne("project.updateWorkListModalView",params);
+	}
+
+	public void updateCompleteWorkList(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		update("project.updateCompleteWorkList",params);
+	}
+
+	public List<Map<String, Object>> selectWorkCheckList(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return selectList("project.selectWorkCheckList",params);
+	}
 }

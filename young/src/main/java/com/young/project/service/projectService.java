@@ -43,4 +43,10 @@ public interface projectService {
 
 	void workCancel(Map<String, Object> params);
 
+	Map<String, Object> updateWorkListModalView(Map<String, Object> params);
+
+	void updateCompleteWorkList(Map<String, Object> params);
+
+	List<Map<String, Object>> selectWorkCheckList(Map<String, Object> params);
+
 }
