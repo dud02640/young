@@ -34,4 +34,6 @@ public interface loginService {
 
 	int indivisualViewCnt(Map<String, Object> params);
 
+	List<Map<String, Object>> memberListView(Map<String, Object> params);
+
 }

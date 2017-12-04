@@ -147,4 +147,16 @@ public class projectImpl implements projectService{
 		// TODO Auto-generated method stub
 		return projectDAO.selectWorkCheckList(params);
 	}
+
+	@Override
+	public List<Map<String, Object>> iVproject(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return projectDAO.iVproject(params);
+	}
+
+	@Override
+	public List<Map<String, Object>> iVwork(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return projectDAO.iVwork(params);
+	}
 }

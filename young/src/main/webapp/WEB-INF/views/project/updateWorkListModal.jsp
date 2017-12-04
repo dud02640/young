@@ -126,7 +126,7 @@ $(function(){
             <div class="form-row">
               <div class="col-md-6">
                 <div class="input-group-btn" id="memo" style="display:none">
-                <textarea class="form-control" ></textarea>
+                <textarea class="form-control" > </textarea>
 				</div>
               </div>
             </div>
@@ -140,7 +140,11 @@ $(function(){
               </div>
             </div> -->
       </div>
+      <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
       <button type="button" class="btn btn-primary" onclick="updateWorkListModalId()">수정</button>
+      </c:if>
       <button type="button" id="openMemo" class="btn btn-primary" onclick="openMemo()">메모작성</button>
       <button type="button" id="createMemo" class="btn btn-primary" onclick="createMemo()" style="display:none">메모생성</button>
-      <button type="button" class="btn btn-primary" onclick="completeWorkList()">완료하기</button>
+      <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
+      	<button type="button" class="btn btn-primary" onclick="completeWorkList()">완료하기</button>
+	  </c:if>

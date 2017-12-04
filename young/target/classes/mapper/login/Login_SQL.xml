@@ -46,7 +46,6 @@
 		  FROM MEMBER
 		 WHERE userId=#{userId}
 		   AND userPw=#{userPw}
-		   AND adminYn="Y"
 		   AND userDeleteYn="N"
 	</select>
 	<select id ="selectMemberList" parameterType="hashmap" resultType="hashmap">
@@ -151,9 +150,8 @@
 	<select id="indivisualView" parameterType="hashmap" resultType="hashmap">
 		 select * 
            from member m
-	 left outer join workchecklist w
-		     on m.userId=w.userId and w.userId=#{userId}
 		  where userDeleteYn="N"
+		   	and adminYn="N"
 		<if test="searchkeyword != null || searchkeyword != '' "> 
 			 <choose>
 			 	<when test="searchOption==1">and userName like concat('%',#{searchkeyword},'%')</when>
@@ -168,8 +166,6 @@
 	<select id="indivisualViewCnt" parameterType="hashmap" resultType="int">
 		 select count(*) 
            from member m
-	 left outer join workchecklist w
-		     on m.userId=w.userId and w.userId=#{userId}
 		  where userDeleteYn="N"
 		<if test="searchkeyword != null || searchkeyword != '' "> 
 			 <choose>
@@ -179,5 +175,11 @@
 			 	<when test="searchOption==4">and userRank like concat('%',#{searchkeyword},'%')</when>
 			 </choose> 
 		 </if>
+	</select>
+	<select id="memberListView" parameterType="hashmap" resultType="hashmap">
+		select *
+		  from member
+		 where userDeleteYn="N"
+		   and adminYn="N"
 	</select>
 </mapper>

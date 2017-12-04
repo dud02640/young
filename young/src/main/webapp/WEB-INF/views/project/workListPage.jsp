@@ -73,25 +73,51 @@ function updateWorkList(workNo){
 			<th>기간</th>
 			<th>진행자</th>
 			<th>진행상태</th>
-			<th>취소</th>
+			<th>취소 </th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach var="selectWorkListAll" items="${selectWorkListAll}" varStatus="status">
 			<tr>
-					<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}"></td>
-					<td>${status.count}</td>
-					<td><a href="#" data-toggle="modal" data-target="#updateWorkListModal" onclick="updateWorkListModalView(${selectWorkListAll.workNo})">${selectWorkListAll.workNum}</a></td>
+					<c:choose>
+						<c:when test="${params.adminYn=='Y'}">
+							<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}"></td>
+						</c:when>
+						<c:when test="${params.adminYn=='N' && params.userId==selectWorkListAll.userId}">
+							<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}"></td>
+						</c:when>
+						<c:otherwise>
+							<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}" disabled="true"></td>
+						</c:otherwise>
+					</c:choose>
+					<td>${params.currentpageDB=params.currentpageDB+1}</td>
+					<td>
+					<c:choose>
+						<c:when test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
+							<a href="#" data-toggle="modal" data-target="#updateWorkListModal" onclick="updateWorkListModalView(${selectWorkListAll.workNo})">${selectWorkListAll.workNum}</a>
+						</c:when>
+						<c:otherwise>
+							${selectWorkListAll.workNum}
+						</c:otherwise>
+					</c:choose>
+					</td>
 					<td>${selectWorkListAll.workSubject}</td>
 					<td>${selectWorkListAll.startDate} ~ ${selectWorkListAll.endDate}</td>
 					<td>${selectWorkListAll.userName}</td>
 					<td>${selectWorkListAll.state}</td>
 					<c:choose>
- 					<c:when test="${params.adminYn=='Y'}">
-					<td><a href="#checklist" onclick="workCancel(${selectWorkListAll.workNo})">취소하기</a></td>
-					</c:when> 
-					<c:when test="${params.adminYn=='N' && params.userId==selectWorkListAll.userId}">
-					<td><a href="#checklist" onclick="workCancel(${selectWorkListAll.workNo})">취소하기</a></td>
+					<c:when test="${selectWorkListAll.userId==params.userId || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
+					<c:choose>
+	 					<c:when test="${params.adminYn=='Y'}">
+							<td><a href="#checklist" onclick="workCancel(${selectWorkListAll.workNo})">취소하기</a></td>
+						</c:when> 
+						<c:when test="${params.adminYn=='N' && params.userId==selectWorkListAll.userId}">
+							<td><a href="#checklist" onclick="workCancel(${selectWorkListAll.workNo})">취소하기</a></td>
+						</c:when>
+					<c:otherwise>
+					<td>취소하기</td>
+					</c:otherwise>
+					</c:choose>
 					</c:when>
 					<c:otherwise>
 					<td>취소하기</td>
@@ -131,6 +157,9 @@ function updateWorkList(workNo){
 	</div>
 	</div>
 	<div class="col-sm-12">
-		<button class="btn btn-primary" type="button" onclick="go_multicancel()">취소</button>
+	<c:if test="${joinMemberCheck.userId eq params.userId || params.adminYn=='Y'}">
+		<button class="btn btn-default" type="button" onclick="go_multicancel()">취소</button>
+	</c:if>
 	</div>
+	
 	<input type="hidden" name="workNo" id="workNo"/>

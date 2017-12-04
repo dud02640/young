@@ -117,4 +117,14 @@ public class projectDAO extends AbstractDAO{
 		// TODO Auto-generated method stub
 		return selectList("project.selectWorkCheckList",params);
 	}
+
+	public List<Map<String, Object>> iVproject(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return selectList("project.iVproject",params);
+	}
+
+	public List<Map<String, Object>> iVwork(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return selectList("project.iVwork",params);
+	}
 }

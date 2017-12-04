@@ -63,6 +63,7 @@
 		 </if>
 	</select>
 	<insert id="insertProject" parameterType="hashmap">
+	begin
 		insert into Project
 		(
 			projectNo,
@@ -98,6 +99,7 @@
 			#{userId},
 			#{userId}
 		)
+
 	</insert>
 	<select id="selectProjectDetail" parameterType="hashmap" resultType="hashmap">
 		select  projectNo,
@@ -216,6 +218,10 @@
 			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword1},'%')</when>
 			 </choose>
 		 </if>
+		 order by (case m.userId
+			 		   when #{userId} then 1
+			 		   else 2
+		 		   end),(endDate-startDate)
 		 limit #{currentpageDB},#{paging}
 	</select>
 	
@@ -282,7 +288,7 @@
 		 order by (case state
 		 		   when "신규" then 1
 		 		   else 2
-		 		   end )
+		 		   end ),(endDate-startDate)
 		 limit #{currentpageDB},#{paging}
 	</select>
 	
@@ -334,5 +340,20 @@
 	    select projectNo,truncate(count(case when state="진행완료" then 1 end)/count(*)*100,0) as persent
 		 from workchecklist  
 		group by projectNo
+	</select>
+	<select id="iVproject" parameterType="hashmap" resultType="hashmap">    
+      select * 
+        from project p
+        left outer join joinm j
+        on p.projectNo = j.projectNo
+        where projectDeleteYn="N"
+	</select>	
+	<select id="iVwork" parameterType="hashmap" resultType="hashmap">
+	  select userId,count(*) as count
+        from workchecklist w 
+        left outer join project p
+          on w.projectNo=p.projectNo
+       where projectDeleteYn="N"
+       group by userId
 	</select>
 </mapper>

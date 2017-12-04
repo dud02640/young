@@ -5,9 +5,10 @@
 $(function(){
 	$('form').submit(function() {return false;});
 });
-function insertjoin(userId){
+function insertjoin(userId,userName){
+	$('#mes').val("추가 완료");
 	$('input[name=joinId]').val(userId);
-	
+	$('input[name=userName]').val(userName);
 	var frm =$("#projectDetailForm").serialize();/* document.getElementById('projectDetailForm'); */
 	
  	$.ajax({
@@ -15,16 +16,17 @@ function insertjoin(userId){
 		url:"/join/insertJoin.do",
 		data: frm,
 		success: function(data){
-			/* location.reload(); */
+			/* location.reload(); */			
 			$("#optionModalInsertMemberId").empty();
 			$("#optionModalInsertMemberId").append(data);
 		},
 		
 	}); 
 }
-function deletejoin(userId){
+function deletejoin(userId,userName){
+	$('#mes').val("삭제 완료");
 	$('input[name=joinId]').val(userId);
-	
+	$('input[name=userName]').val(userName);
 	var frm =$("#projectDetailForm").serialize();/* document.getElementById('projectDetailForm'); */
 
  	$.ajax({
@@ -39,8 +41,9 @@ function deletejoin(userId){
 		
 	}); 
 }
-function selectYReader(userId){
-	
+function selectYReader(userId,userName){
+	$('#mes').val("팀장 선택");
+	$('input[name=userName]').val(userName);
 	$('input[name=joinId]').val(userId);			//*히든에 먼저 아이디를 넣고 업데이트를 시킴 
 	var frm =$("#projectDetailForm").serialize();
 	
@@ -55,7 +58,9 @@ function selectYReader(userId){
 		},		
 	}); 
 }
-function selectNReader(userId){
+function selectNReader(userId,userName){
+	$('#mes').val("팀장 해제");
+	$('input[name=userName]').val(userName);
 	$('input[name=joinId]').val(userId);			//*히든에 먼저 아이디를 넣고 업데이트를 시킴 
 	var frm =$("#projectDetailForm").serialize();
 	
@@ -99,18 +104,18 @@ function selectNReader(userId){
 							<td>${list.loginUserId}</td>
 							<c:choose>
 							<c:when test="${list.loginUserId eq list.joinUserId && list.joinProjectNo eq params.projectNo}">
-								<td><button class="btn btn-primary" type="button" onclick="deletejoin('${list.loginUserId}');">삭제</button></td>
+								<td><button class="btn btn-primary" type="button" onclick="deletejoin('${list.loginUserId}','${list.loginUserName}');">삭제</button></td>
 							</c:when>
 							<c:otherwise>
-								<td><button class="btn btn-primary" type="button" onclick="insertjoin('${list.loginUserId}');">추가</button></td>
+								<td><button class="btn btn-primary" type="button" onclick="insertjoin('${list.loginUserId}','${list.loginUserName}');">추가</button></td>
 							</c:otherwise>
 							</c:choose>
 							<c:choose>
 								<c:when test="${list.leaderYn eq 'Y'}">
-								<td><button class="btn btn-danger" type="button" onclick="selectNReader('${list.loginUserId}')">*팀장</td>								
+								<td><button class="btn btn-danger" type="button" onclick="selectNReader('${list.loginUserId}','${list.loginUserName}')">*팀장</td>								
 								</c:when>
 								<c:when test="${list.leaderYn eq 'N'}">
-								<td><button class="btn btn-success" type="button" onclick="selectYReader('${list.loginUserId}')">팀원</td>
+								<td><button class="btn btn-success" type="button" onclick="selectYReader('${list.loginUserId}','${list.loginUserName}')">팀원</td>
 								</c:when>
 								<c:otherwise>
 								<td></td>
@@ -144,11 +149,14 @@ function selectNReader(userId){
 				<li class="paginate_button page-item next"><button name="next" class="page-link" onclick="searchMember(${params.selectPage +1})">다음</button></li>
 			</c:if>
 		<input type="hidden" name="joinId" value=""/>
+		<input type="hidden" name="userName" value=""/>
 		<input type="hidden" name="selectPage" value="${params.selectPage}"/>
 		<input type="hidden" name="underPaging" value=""/>
 		<input type="hidden" name="startpage" value="${params.startpage}"/>
 		<input type="hidden" name="endpageNo" value="${params.endpageNo}"/>
 		<input type="hidden" name="projectNo" value="${projectdetail.projectNo}"/>
+
+	  	<input type="hidden" id="mes" name="mes" >
 		</ul>
 		</div>
 		</div>

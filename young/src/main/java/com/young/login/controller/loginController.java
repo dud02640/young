@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
 import com.young.login.sevice.loginService;
-
+import com.young.project.service.projectService;
 
 /**
  * Handles requests for the application home page.
@@ -37,6 +37,9 @@ public class loginController {
 	
 	@Resource(name="loginService")
 	private loginService loginService;
+	
+	@Resource(name="projectService")
+	private projectService projectService;
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -146,9 +149,9 @@ public class loginController {
 	@RequestMapping(value = "/login/logincheck.do")
 	public String loginCheck(HttpServletRequest req,@RequestParam Map<String,Object> params ,Model model,HttpServletResponse response) throws IOException {
 		String returnUrl="";
-		
+		System.out.println(params);
 		Map<String,Object> logincheck = loginService.selectCheckMember(params);
-		 		
+		
 		if(logincheck.get("userId").equals(params.get("userId"))&&logincheck.get("userPw").equals(params.get("userPw"))) {
 			HttpSession session=req.getSession();
 			session.setAttribute("userId",logincheck.get("userId"));
@@ -163,7 +166,7 @@ public class loginController {
 			out.flush();
 			model.addAttribute("id", params.get("userId"));
 		
-			returnUrl= "redirect:/login/login";
+			returnUrl= "redirect:/login/login.do";
 		}
 		return returnUrl;
 	}
@@ -250,6 +253,8 @@ public class loginController {
 		params.put("startpage",startpage);
 		
 		List<Map<String,Object>> indivisualView = loginService.indivisualView(params);
+		List<Map<String,Object>> iVproject = projectService.iVproject(params);
+		List<Map<String,Object>> iVwork = projectService.iVwork(params);		
 
 		int indivisualViewCnt= loginService.indivisualViewCnt(params);			//member 총인원
 
@@ -265,7 +270,9 @@ public class loginController {
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 
+		model.addAttribute("iVwork",iVwork);
 		model.addAttribute("params",params);
+		model.addAttribute("iVproject",iVproject);
 		model.addAttribute("indivisualView",indivisualView);
 		
 		return "/login/indivisual";

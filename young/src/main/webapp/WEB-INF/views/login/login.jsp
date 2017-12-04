@@ -41,7 +41,7 @@
             <label>비밀번호</label> 
             <input class="form-control" name="userPw" type="password">
           </div>
-          <button class="btn btn-primary btn-block" onclick="go_main();">로그인</button>
+          <button class="btn btn-primary btn-block" onclick="go_main()">로그인</button>
         </div>
   </div>
 </form>

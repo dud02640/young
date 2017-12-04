@@ -73,6 +73,10 @@ public class joinServiceImpl implements joinService{
 		// TODO Auto-generated method stub
 		return joinDAO.projectLeader(params);
 	}
-
+	
+	public Map<String, Object> joinMemberCheck(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return joinDAO.joinMemberCheck(params);
+	}
 
 }

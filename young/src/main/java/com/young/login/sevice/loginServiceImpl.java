@@ -97,4 +97,10 @@ public class loginServiceImpl implements loginService{
 		// TODO Auto-generated method stub
 		return loginDAO.indivisualViewCnt(params);
 	}
+
+	@Override
+	public List<Map<String, Object>> memberListView(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.memberListView(params);
+	}
 }

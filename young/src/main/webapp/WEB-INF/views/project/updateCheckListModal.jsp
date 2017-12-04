@@ -52,7 +52,13 @@ $(function(){
 	});
 
 });
-
+function medo(workNo){
+	$('#workNo').val(workNo);
+	$('#mes').val("Do it");
+	var frm =document.getElementById('projectDetailForm');
+	frm.action="/project/medo.do";
+	frm.submit();
+}
 </script>
 <!--  -->       
           <div class="form-group">
@@ -99,3 +105,6 @@ $(function(){
       </div>
       <button type="button" class="btn btn-primary" onclick="updatecheckListModalId()">수정</button>
       <button type="button" class="btn btn-primary" onclick="">삭제</button>
+      <c:if test="${params.adminYn=='N'}">
+	  	<button class="btn btn-primary" type="button" onclick="medo(${updateListModalPage.workNo})">내가하기</button>
+	  </c:if>

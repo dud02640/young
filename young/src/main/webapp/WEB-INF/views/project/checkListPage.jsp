@@ -86,7 +86,7 @@ function mutiDo(){
                 			<th>기간</th>
                 			<th>진행상태</th>
                 			<c:choose>
-                			<c:when test="${params.adminYn=='N'}"><!-- 관리자가 보이게끔 설정해놓음 나중에 사용자한테는 Y로 해서 사용자가 보이도록  -->
+                			<c:when test="${params.adminYn=='Y'}"><!-- 관리자가 보이게끔 설정해놓음 나중에 사용자한테는 Y로 해서 사용자가 보이도록  -->
 							</c:when>
 							<c:otherwise>
 							<th>하기</th>
@@ -98,20 +98,36 @@ function mutiDo(){
                 	<c:forEach var="selectCheckListAll" items="${selectCheckListAll}" varStatus="status">
                 		<tr>
                 			<td><input type="checkbox" name="checkbox2" value="${selectCheckListAll.workNo}"></td>
-							<td>${status.count}</td>
-							<td><a href="#" data-toggle="modal" data-target="#updateCheckListModal" onclick="updateCheckListModalView(${selectCheckListAll.workNo})" >${selectCheckListAll.workNum}</a></td>
+							<td>${params.currentpageDB=params.currentpageDB+1}</td>
+							<td>
+							<c:choose>
+								<c:when test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
+								<a href="#" data-toggle="modal" data-target="#updateCheckListModal" onclick="updateCheckListModalView(${selectCheckListAll.workNo})" >${selectCheckListAll.workNum}</a>
+								</c:when>
+								<c:otherwise>
+								${selectCheckListAll.workNum}
+								</c:otherwise>
+							</c:choose>
+							</td>
 							<td>${selectCheckListAll.workSubject}</td>
 							<td>${selectCheckListAll.startDate} ~ ${selectCheckListAll.endDate}</td>
 							<td>${selectCheckListAll.state}</td>
 							<c:choose>
-							<c:when test="${params.adminYn=='N'}">		<!-- 사용자는 업무진행 X 나중에  Y로 바꾸기 -->
-							</c:when>
-							<c:when test="${selectCheckListAll.state=='신규'}">
-							<td><a href="#" onclick="medo(${selectCheckListAll.workNo})">내가하기</a></td>
-							</c:when>
-							<c:otherwise>
-							<td><a href="#" onclick="medo(${selectCheckListAll.workNo})">다시하기</a></td>
-							</c:otherwise>
+								<c:when test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
+									<c:choose>
+									<c:when test="${params.adminYn=='Y'}">		<!-- 사용자는 업무진행 X 나중에  Y로 바꾸기 -->
+									</c:when>
+									<c:when test="${selectCheckListAll.state=='신규'}">
+									<td><a href="#" onclick="medo(${selectCheckListAll.workNo})">내가하기</a></td>
+									</c:when>
+									<c:otherwise>
+									<td><a href="#" onclick="medo(${selectCheckListAll.workNo})">다시하기</a></td>
+									</c:otherwise>
+									</c:choose>
+								</c:when>
+								<c:otherwise>
+								<td></td>
+								</c:otherwise>
 							</c:choose>
                 		</tr>
                 	</c:forEach>
@@ -150,9 +166,11 @@ function mutiDo(){
 		</div>
 		</div>
 		<div class="col-sm-12">
-			<c:if test="${params.adminYn=='Y'}">
+		<c:if test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
+			<c:if test="${params.adminYn=='N'}">
 			<button class="btn btn-primary" type="button" onclick="mutiDo()">내가하기</button>
 			</c:if>
-			<button class="btn btn-primary" type="button" onclick="go_multidel2()">삭제</button>
+			<button class="btn btn-default" type="button" onclick="go_multidel2()">삭제</button>
+			</c:if>
 		</div>
 		<input type="hidden" name="workNo" id="workNo"/>

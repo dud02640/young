@@ -1,6 +1,7 @@
 package com.young.join.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -38,19 +39,33 @@ public class joinController {
 	private projectService projectService;
 	
 	@RequestMapping(value = "/join/insertJoin.do")
-	public String insertmember(HttpServletRequest req,@RequestParam Map<String,Object> params) {
+	public String insertmember(HttpServletRequest req,@RequestParam Map<String,Object> params,HttpServletResponse response) throws IOException {
 /*		String projectNo=URLEncoder.encode(params.get("projectNo").toString());*/
 
-		joinService.insertjoin(params);		
+		joinService.insertjoin(params);	
+		
+		String userName=(String) params.get("userName");
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" +userName+"님"+ mes + "');</script>");
+		out.flush();
 		
 		return "forward:/project/projectJoinList.do";
 	}
 	
 	@RequestMapping(value = "/join/deleteJoin.do")
-	public String deletemember(HttpServletRequest req,@RequestParam Map<String,Object> params){
+	public String deletemember(HttpServletRequest req,@RequestParam Map<String,Object> params,HttpServletResponse response) throws IOException{
 /*		String projectNo=URLEncoder.encode(params.get("projectNo").toString());*/
 
 		joinService.deleteJoin(params);	
+		
+		String userName=(String) params.get("userName");
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" +userName+"님"+ mes + "');</script>");
+		out.flush();
 		
 		return"forward:/project/projectJoinList.do";
 	}
@@ -111,16 +126,30 @@ public class joinController {
 	}
 	
 	@RequestMapping(value="/join/updateYleader.do")
-	public String updateYleader(HttpServletRequest req,@RequestParam Map<String,Object> params)
+	public String updateYleader(HttpServletRequest req,@RequestParam Map<String,Object> params,HttpServletResponse response) throws IOException
 	{
 		joinService.updateYleader(params);
+		
+		String userName=(String) params.get("userName");
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" +userName+"님"+ mes + "');</script>");
+		out.flush();
 		
 		return "forward:/project/projectJoinList.do";
 	}
 	@RequestMapping(value="/join/updateNleader.do")
-	public String updateNleader(HttpServletRequest req,@RequestParam Map<String,Object> params)
+	public String updateNleader(HttpServletRequest req,@RequestParam Map<String,Object> params,HttpServletResponse response) throws IOException
 	{
 		joinService.updateNleader(params);
+		
+		String userName=(String) params.get("userName");
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" +userName+"님"+ mes + "');</script>");
+		out.flush();
 		
 		return "forward:/project/projectJoinList.do";
 	}

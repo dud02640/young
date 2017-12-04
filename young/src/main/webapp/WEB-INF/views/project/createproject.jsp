@@ -3,6 +3,7 @@
 <html>
 <head>
 <%@ include file ="/WEB-INF/views/include/design.jsp" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>프로젝트 생성 페이지</title>
 <script>
@@ -11,7 +12,7 @@ $(function(){
 });
 function insertProject(){
 	var frm = document.getElementById('projectForm');
-	
+
 	if(parseInt($("#start").val())>parseInt($("#end").val())){
 			alert("시작일과 종료일을 확인하세요.");
 			$('input[name=projectStartDate]').focus();
@@ -58,10 +59,27 @@ $(function(){
   		if(event){
   			event.returnValue=false;
   	} */
+
+function searchMember(pIndex){
+	$('input[name=selectPage]').val(pIndex);
+	var frm =$("#projectForm").serialize();/* document.getElementById('projectDetailForm'); */
+
+ 	$.ajax({
+		type:"POST",
+		url:"/project/createProjectModal.do",
+		data: frm,
+		success: function(data){
+			/* location.reload(); */
+			$("#choiceLeaderId").empty();
+			$("#choiceLeaderId").append(data);	
+		}
+	}); 
+}
+
 </script>
 </head>
 <body class="bg-dark">
-<form name="projectForm" id="projectForm" enctype="multipart/form-data">
+<form name="projectForm" id="projectForm" method="post">
   <div class="container">
     <div class="card card-register mx-auto mt-5">
       <div class="card-header">프로젝트 생성</div>
@@ -112,6 +130,14 @@ $(function(){
 				</div>
               </div>
             </div>
+            <c:if test="${params.adminYn=='Y'}">
+            <div class="form-row">
+              <div class="col-md-6">
+                <label>*팀장 지정</label>
+                 <input name="leaderId" data-toggle="modal" data-target="#choiceLeader" onclick="searchMember()" class="form-control" placeholder="팀장 선택" type="text" value="${params.userId}" readOnly/>
+                </div>
+            </div>
+            </c:if>
             <div class="form-row">
               <div class="col-md-6">
                 <label>내용</label>
@@ -132,6 +158,31 @@ $(function(){
     </div>
   </div>
   <input type="hidden" id="mes" name="mes"/>
+  
+  
+<!-- 팀장선택 modal -->
+<div class="modal fade" id="choiceLeader">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<h4 class="modal-title">팀장 지정</h4>
+        <button type="button" class="close" data-dismiss="modal" onclick="refresh()"><span>x</span></button>
+      </div>
+      <div class="modal-body">
+		<div id="choiceLeaderId">
+
+   		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="refresh()">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 팀장선택 modal -->
+
+
   </form>
 </body>
 </html>
+

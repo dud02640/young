@@ -80,7 +80,7 @@ $(function(){
 	          </a>
 	        </li>
 	        <li class="nav-item" >
-	          <a class="nav-link" href="#">
+	          <a class="nav-link" href="/login/indivisualView.do">
 	            <i class="fa fa-fw fa-file"></i>
 	            <span class="nav-link-text">개인</span>
 	          </a>

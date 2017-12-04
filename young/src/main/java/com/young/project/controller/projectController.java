@@ -50,6 +50,8 @@ public class projectController {
 	@RequestMapping(value = "/project/main.do")
 	public String loginCheck(HttpServletRequest req,@RequestParam Map<String,Object> params ,Model model) throws IOException {		
 		
+		HttpSession session = req.getSession();		
+		params.put("adminYn", session.getAttribute("adminYn"));
 		List<Map<String,Object>> JoinId= joinService.selectJoinId(params);		
 		List<Map<String,Object>> projectLeader= joinService.projectLeader(params);
 		//페이징//
@@ -97,7 +99,6 @@ public class projectController {
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 		
-		
 		model.addAttribute("WorkCheckList",WorkCheckList);
 		model.addAttribute("JoinId",JoinId);
 		model.addAttribute("params", params);
@@ -111,8 +112,65 @@ public class projectController {
 
 		return "/include/commonnav";
 	}
+	@RequestMapping(value = "/project/createProjectModal.do")
+	public String createProjectModal(HttpServletRequest req,HttpServletResponse response,@RequestParam Map<String,Object> params,Model model) throws IOException{
+		
+		int currentpage=(params.get("selectPage")==null||params.get("selectPage")==""? 1:Integer.parseInt(params.get("selectPage").toString()));
+		int startpage=(params.get("startpage")==null? 1:1);
+		int endpageNo=(params.get("endpageNo")==null? 10:10);
+		int endpage = 0;
+		int currentpageDB=0;				//DB에서의 시작 컬럼 번호
+		int paging=5;						//한페이지당 list 컬럼의 수
+
+		 //다음버튼 클릭시 첫페이지랑 마지막 페이지를 +10 
+		if(endpageNo<currentpage) {
+			startpage=endpageNo+1;
+			endpageNo+=10;	
+		}
+		 //이전버튼 클릭시 첫페이지를 -10 마지막 페이지는 startpage에서 +10 (endpageNo가 유동적으로 바뀌므로 startpage를 기준잡음)  
+		else if(currentpage<startpage) {	
+			startpage-=10;
+			endpageNo=startpage+9;
+		}						
+		
+		if(params.get("selectPage")==null||params.get("selectPage")=="") {
+			currentpageDB=0;
+			params.put("selectPage",startpage);
+		}else 
+			currentpageDB=Integer.parseInt(params.get("selectPage").toString())-1;
+		
+		params.put("paging",paging);
+		params.put("currentpageDB",currentpageDB*paging);				//0~9,10~19 10개씩 보여준다
+		params.put("startpage",startpage);
+	
+		List<Map<String,Object>> indivisualView = loginService.indivisualView(params);
+
+		int membercnt= loginService.indivisualViewCnt(params);			//member 총인원
+		
+		if(membercnt%paging!=0)							//paging으로 나누었을떄 0 이면 나뉜 페이지 보여줌
+			endpage=membercnt/paging+1;					//맴버 총 수에서 10을 나누고 나머지 페이지
+		else
+			endpage=membercnt/paging;
+		
+		if(endpageNo>endpage) {
+			endpageNo=endpage;
+		}
+		params.put("currentpage", currentpage);
+		params.put("endpage",endpage);
+		params.put("endpageNo",endpageNo);
+		
+		model.addAttribute("indivisualView",indivisualView);
+		model.addAttribute("params",params);
+		
+		return "/project/createProjectModal";
+		
+	}
 	@RequestMapping(value = "/project/createproject.do")
-	public String createProject(HttpServletResponse response,@RequestParam Map<String,Object> params,Model model) throws IOException{
+	public String createProject(HttpServletRequest req,HttpServletResponse response,@RequestParam Map<String,Object> params,Model model) throws IOException{
+		
+		HttpSession session = req.getSession();		
+		params.put("adminYn", session.getAttribute("adminYn"));
+				
 		String mes=(String) params.get("mes");
 		if(mes==null||mes=="") {	
 		}
@@ -122,6 +180,8 @@ public class projectController {
 			out.println("<script>alert('" + mes + "');</script>");
 			out.flush();
 		}
+		
+		model.addAttribute("params",params);
 		return "/project/createproject";
 	}
 	
@@ -137,7 +197,6 @@ public class projectController {
 		params.put("projectContent",projectContent);
 		params.put("userId", session.getAttribute("userId"));
 		projectService.insertProject(params);
-		
 		
 		return "redirect:/project/createproject.do?mes="+mes;
 	}
@@ -180,7 +239,6 @@ public class projectController {
 		params.put("adminYn", session.getAttribute("adminYn"));
 		session.setAttribute("projectNo", req.getParameter("projectNo"));
 		
-		System.out.println("@@@@@@@@@"+params);
 		String sessionProjectNo = (String) session.getAttribute("projectNo");
 		if (sessionProjectNo == null || sessionProjectNo == ""){
 			return "forward:/project/main.do";
@@ -191,13 +249,17 @@ public class projectController {
 			projectContent = projectContent.replace("<br>","\n");
 		
 			List<Map<String,Object>> joinmember= joinService.joinMember(params);			
-			List<Map<String,Object>> projectLeader= joinService.projectLeader(params);		
-			
+			List<Map<String,Object>> projectLeader= joinService.projectLeader(params);
+			Map<String,Object> joinMemberCheck= joinService.joinMemberCheck(params);	
+
 	/*		model.addAttribute("selectWorkList",selectWorkList);*/
+			model.addAttribute("params",params);
+			model.addAttribute("joinMemberCheck",joinMemberCheck);
 			model.addAttribute("projectLeader",projectLeader);
 			model.addAttribute("joinmember",joinmember);
 			model.addAttribute("projectContent",projectContent);
 			model.addAttribute("projectdetail",projectdetail);
+			
 			return "/project/projectdetailview";
 		}
 		
@@ -309,20 +371,30 @@ public class projectController {
 		return "/project/createcheckListModal";	
 	}
 	@RequestMapping(value ="/project/updateCheckListModalView.do")
-	public ModelAndView updateListModalPage(@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) {
+	public ModelAndView updateListModalPage(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) {
 		ModelAndView mav = new ModelAndView();
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		params.put("adminYn", session.getAttribute("adminYn"));
+		
 		Map<String,Object> updateListModalPage= projectService.selectupdateListModalPage(params);
 		
 		mav.addObject("updateListModalPage", updateListModalPage);
+		mav.addObject("params", params);
 		mav.setViewName("/project/updateCheckListModal");
 		return mav;	
 	}
 	
 	@RequestMapping(value ="/project/updateWorkListModalView.do")
-	public ModelAndView updateWorkListModalView(@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) {
+	public ModelAndView updateWorkListModalView(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) {
 		ModelAndView mav = new ModelAndView();
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		params.put("adminYn", session.getAttribute("adminYn"));
+		
 		Map<String,Object> updateWorkListModalView= projectService.updateWorkListModalView(params);
 		
+		mav.addObject("params", params);
 		mav.addObject("updateWorkListModalView", updateWorkListModalView);
 		mav.setViewName("/project/updateWorkListModal");
 		return mav;	
@@ -379,10 +451,13 @@ public class projectController {
 		if(endpageNo>endpage) {
 			endpageNo=endpage;
 		}
+		Map<String,Object> joinMemberCheck= joinService.joinMemberCheck(params);	
+		
 		params.put("currentpage", currentpage);
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 		
+		mav.addObject("joinMemberCheck",joinMemberCheck);
 		mav.addObject("updateListModalPage", updateListModalPage);
 		mav.addObject("params",params);
 		mav.addObject("selectCheckListAll",selectCheckListAll);
@@ -441,10 +516,13 @@ public class projectController {
 		if(endpageNo>endpage) {
 			endpageNo=endpage;
 		}
+		Map<String,Object> joinMemberCheck= joinService.joinMemberCheck(params);
+		
 		params.put("currentpage", currentpage);
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 		
+		mav.addObject("joinMemberCheck", joinMemberCheck);
 		mav.addObject("updateListModalPage", updateListModalPage);
 		mav.addObject("params",params);
 		mav.addObject("selectWorkListAll",selectWorkListAll);
@@ -454,7 +532,7 @@ public class projectController {
 	}
 	
 	@RequestMapping(value ="/project/workMultiDelete.do")
-	public String workMultiDelete(@RequestParam("checkbox")String[] checkbox,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
+	public String workMultiDelete(@RequestParam("checkbox2")String[] checkbox,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
 
 		
 		for(String chk : checkbox) {
@@ -578,6 +656,7 @@ public class projectController {
 		
 		return "forward:/project/projectDetailView.do";	
 	}
+	
 	
 /*	//테스트//
 	@RequestMapping(value = "/project/projectDetailView2.do")

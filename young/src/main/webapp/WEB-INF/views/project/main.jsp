@@ -1,3 +1,7 @@
+<!-- 사용자 다중 삭제 기능 막기(체크박스도) -->
+<!-- 사용자 회원가입 막기-->
+<!-- 프로젝트 생성시 팀장 권한 부여(관리자만 사용자는 생성한사람이 팀장) -->
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -113,11 +117,13 @@ function searchMember(pIndex){
 					<span class="nav-link-text">개인</span>
 				</a>
 				</li>
+				<c:if test="${adminYn=='Y'}">
 				<li class="nav-item" >
 					<a class="nav-link" href="/login/memberlist.do"> 
 					<span class="nav-link-text">회원관리</span>
 				</a>
 				</li>
+				</c:if>
 				<li class="nav-item">
 					<a href="#" class="nav-link" onclick="logout();"> 
 					<span class="nav-link-text">로그아웃</span>
@@ -136,9 +142,11 @@ function searchMember(pIndex){
 						<button class="btn btn-primary" onclick="createproject();">프로젝트 생성</button>	
 					</li>
 				</ol>
+				<c:if test="${params.adminYn=='Y'}">
 				<ol>
 					전체 선택<input type ="checkbox" name="allcheckbox" onclick="allclick()">	
 				</ol>
+				</c:if>
 				<!-- Icon Cards-->
 				<div class="row">
 					<table>
@@ -147,7 +155,9 @@ function searchMember(pIndex){
 								<div class="card text-white o-hidden h-5 ${list.projectState}">
 									<!-- 색 치환 -->
 									<div class="card-body">
+									<c:if test="${params.adminYn=='Y'}">
 										<input type="checkbox" name="projectcheckbox" value="${list.projectNo}" />
+									</c:if>
 										<div class="mr-3">프로젝트명:${list.projectName} 
 										${list.projectStateName}</div>
 										<div class="mr-3">기관명:${list.institutionName}</div>
@@ -210,7 +220,9 @@ function searchMember(pIndex){
 		<input type="hidden" name="endpageNo" value="${params.endpageNo}"/>
 		<input type="hidden" name="projectNo" value="${projectdetail.projectNo}"/>
 		<li class="col-md-7">
-		<button type="button" name="mutiDelete" class="btn btn-primary" onclick="go_multidel()">삭제</button>
+		<c:if test="${params.adminYn=='Y'}">
+			<button type="button" name="mutiDelete" class="btn btn-primary" onclick="go_multidel()">삭제</button>
+		</c:if>
 		</li>
 		</ul>
 

@@ -24,5 +24,7 @@ public interface joinService {
 
 	List<Map<String, Object>> projectLeader(Map<String, Object> params);
 
+	Map<String, Object> joinMemberCheck(Map<String, Object> params);
+
 
 }

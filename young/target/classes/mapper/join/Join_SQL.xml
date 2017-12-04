@@ -30,6 +30,7 @@
 		  from joinm j
           left outer join member m
           	on j.userId=m.userId
+          	where userDeleteYn="N"
 	</select>
 	<delete id ="deleteJoin" parameterType="hashmap" >
 		delete 
@@ -81,6 +82,20 @@
              left outer join member m
              on j.userId=m.userId 
 		 	where projectNo=#{projectNo}
+		 	  and userDeleteYn="N"
+	</select>
+	
+	<select id="joinMemberCheck" parameterType="hashmap" resultType="hashmap">
+		   SELECT j.userId as userId,
+		   		  j.projectNo as projectNo,
+		   		  j.leaderYn as leaderYn,
+		   		  m.userName as userName
+			 FROM joinm j
+             left outer join member m
+             on j.userId=m.userId 
+		 	where projectNo=#{projectNo}
+		 	  and j.userId=#{userId}
+		 	  and userDeleteYn="N"
 	</select>
 	
 	<update id="updateYleader" parameterType="hashmap">
@@ -123,5 +138,6 @@
              on j.userId=m.userId 
 		 	where projectNo=#{projectNo}
 		 	  and leaderYn="Y"
+		 	  and userDeleteYn="N"
 	</select> 
 </mapper>

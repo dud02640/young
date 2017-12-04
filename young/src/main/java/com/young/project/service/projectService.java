@@ -49,4 +49,8 @@ public interface projectService {
 
 	List<Map<String, Object>> selectWorkCheckList(Map<String, Object> params);
 
+	List<Map<String, Object>> iVproject(Map<String, Object> params);
+
+	List<Map<String, Object>> iVwork(Map<String, Object> params);
+
 }

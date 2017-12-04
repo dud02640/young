@@ -56,5 +56,10 @@ public class joinDAO extends AbstractDAO{
 		return selectList("join.projectLeader",params);
 	}
 
+	public Map<String, Object> joinMemberCheck(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (Map<String, Object>)selectOne("join.joinMemberCheck",params);
+	}
+
 
 }

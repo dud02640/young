@@ -1,3 +1,21 @@
+
+<!-- 관리자
+	  관리자는 업무 진행x, 그외 모든 기능 사용 가능 
+	  팀장권한부여 
+	  설정 ㅇ-->
+
+<!-- 팀장
+	  팀장은 팀원 업무 관리
+	  설정 : 프로젝트 수정가능
+	  	    팀원 추가 삭제기능(팀장 삭제 X) -->
+
+<!-- 팀원
+	 업무진행/취소가능(다른사람 업무관리x) 
+-->
+
+<!-- 팀원아닌사람
+	  프로젝트 내용 구경만 가능 
+-->
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -65,7 +83,6 @@ function searchMember(pIndex){
 		data: frm,
 		success: function(data){
 			/* location.reload(); */
-
 			$("#optionModalInsertMemberId").empty();
 			$("#optionModalInsertMemberId").append(data);	
 		}
@@ -235,16 +252,18 @@ function go_multidel(){
 	          </a>
 	        </li>
 	        <li class="nav-item" >
-	          <a class="nav-link" href="#">
+	          <a class="nav-link" href="/login/indivisualView.do" >
 	            <i class="fa fa-fw fa-file"></i>
 	            <span class="nav-link-text">개인</span>
 	          </a>
 	        </li>
-	       	<li class="nav-item" >
-	          <a class="nav-link" href="/login/memberlist.do">
-	            <span class="nav-link-text">회원관리</span>
-	          </a>
-	        </li>
+				<c:if test="${adminYn=='Y'}">
+				<li class="nav-item" >
+					<a class="nav-link" href="/login/memberlist.do"> 
+					<span class="nav-link-text">회원관리</span>
+				</a>
+				</li>
+			</c:if>
 	        <li class="nav-item">
 	          <a class="nav-link" href="#" onclick="logout()">
 	            <span class="nav-link-text">로그아웃</span>
@@ -259,9 +278,11 @@ function go_multidel(){
 			<ol class="breadcrumb">
 				<li class="breadcrumb-item">${projectdetail.projectName}</li>
 				<li class="breadcrumb-item active">${projectdetail.institutionName}</li>
+				<c:if test="${params.adminYn=='Y' || joinMemberCheck.leaderYn=='Y'}"><!-- 관리자인지 아닌지 팀장인지 아닌지 -->
 				<li>
 					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#optionModal">설정</button>	
 				</li>
+				</c:if>
 			</ol>
 			<div class="card mb-3">
 			<div class="card-body bg-faded">
@@ -295,13 +316,17 @@ function go_multidel(){
 				</div>
 			</div>	
 		</div>
-		<div class="card mb-3">
+	<div class="card mb-3">
 		<div class="card-body bg-faded">
-			<div class="row" >체크 리스트<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createcheckListModal" onclick="createcheckListModalIdPage()">추가</button></div>
+			<div class="row" >체크 리스트
+			<c:if test="${ joinMemberCheck.leaderYn=='Y' || params.adminYn=='Y'}">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createcheckListModal" onclick="createcheckListModalIdPage()">추가</button>
+			</c:if>
+			</div>
 			<div id="checklist">
 			
 			</div>
-			</div>
+		</div>
 	</div>
 	<div class="card mb-3">
 		<div class="card-body bg-faded">
@@ -311,6 +336,7 @@ function go_multidel(){
 			</div>
 		</div>
 	</div>
+	
 	</div>
 	</div>
 
@@ -512,6 +538,8 @@ function go_multidel(){
     </div>
   </div>
 </div>
+
+<input type="hidden" name="joinMemberCheck.userId" value="${joinMemberCheck.userId}"/>
 <!-- updateWorkListModal -->
 
 <!-- checkListModal -->

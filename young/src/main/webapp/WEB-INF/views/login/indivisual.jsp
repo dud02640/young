@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -104,15 +105,21 @@ function searchMember(pIndex){
 								<div class="card text-white o-hidden h-5 bg-info">
 									<!-- 색 치환 -->
 									<div class="card-body">										
-										<div class="mr-3">${indivisualView.userPosition}</div>
-										<div class="mr-3">${indivisualView.userRank} <h4>${indivisualView.userName}</h4></div>
+										<div class="mr-3">${indivisualView.userPosition} ${indivisualView.userRank} <h4>${indivisualView.userName}</h4></div>
+										<div class="mr-3"> </div>
 										<div class="mr-3">*진행중인 프로젝트</div>
-										<c:forEach var="indivisualView2" items="${indivisualView}">
-										<c:if test="${indivisualView.project==indivisualView2.projectNo}">
-											<div class="mr-3">${indivisualView.projectNo}	</div>
-										</c:if>
-										</c:forEach>
-										<div class="mr-3">업무량:	</div>
+											<c:forEach var="iVproject" items="${iVproject}">
+		 										<c:if test="${indivisualView.userId==iVproject.userId}">
+													<li class="mr-3"> ${iVproject.projectName}</li>
+												</c:if> 
+											</c:forEach>
+										<div class="mr-3">업무량:
+											<c:forEach var="iVwork" items="${iVwork}" varStatus="status">
+		 										<c:if test="${indivisualView.userId==iVwork.userId}">
+													<div class="mr-3">${iVwork.count}</div>
+												</c:if> 
+											</c:forEach>
+										</div>
 									</div>
 									<button class="card-footer text-white clearfix small z-1">
 										<span class="float-left">자세히</span> <span class="float-right">
