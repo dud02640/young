@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script>
 $(function(){
-	$('form').submit(function() {return false;});
+	$('form').submit(function() {return false;});	
 });
 function searchWork2(pIndex){
 	$('input[name=selectPage]').val(pIndex);
@@ -19,7 +19,6 @@ function searchWork2(pIndex){
 			$("#checklist").append(data);	
 		}
 	}); 
-
 }
 
 function allclick2(){
@@ -49,6 +48,7 @@ function medo(workNo){
 }
 
 function mutiDo(){
+
 	$('#mes').val("내가 하기");
 	var frm =document.getElementById('projectDetailForm');
 		if($('input:checkbox[name=checkbox2]:checked').length>0){
@@ -58,6 +58,30 @@ function mutiDo(){
  			alert("하고 싶은 업무를 하나 이상 선택하십시오.");
  		}
 }
+ function giveWork(){
+/* 	var checkboxValue=[];
+	$("input[name='checkbox2']:checked").each(function(i){
+		checkboxValue.push($(this).val());
+	});
+	$("#checkArray").val(checkboxValue); */
+	$("#workNo").val(workNo);
+ 	if($('input:checkbox[name=checkbox2]:checked').length>0){
+ 		$("#giveWork").modal("show");
+	 	var frm =$("#projectDetailForm").serialize();
+		 	$.ajax({
+		 		type:"POST",
+		 		url:"/project/giveWork.do",
+		 		data: frm,
+		 		success: function(data){
+		 		 	$("#giveWorkId").empty();
+		 		 	$("#giveWorkId").append(data);
+		 		},	
+		 	});
+ 	}
+ 	else{
+		alert("업부를 주기 위해서는 1개 이상의 업무를 선택해야합니다.");
+	}	
+} 
 </script>
  	       <div class="form-group">
             <div class="form-row">
@@ -68,7 +92,7 @@ function mutiDo(){
 						<option value="1" ${params.searchOption eq "1" ? "selected" : ""}>업무번호</option>
 						<option value="2" ${params.searchOption eq "2" ? "selected" : ""}>업무명</option>
 				</select> 
-                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchWork2();}"/>
+                <input name="searchkeyword2" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword2}" onkeypress="if(event.keyCode==13){searchWork2();}"/>
                 <button class="btn btn-primary" type="submit" onclick="searchWork2()">검색</button>
                 </span>
 				</div>	
@@ -97,7 +121,7 @@ function mutiDo(){
                 	<tbody>
                 	<c:forEach var="selectCheckListAll" items="${selectCheckListAll}" varStatus="status">
                 		<tr>
-                			<td><input type="checkbox" name="checkbox2" value="${selectCheckListAll.workNo}"></td>
+                			<td><input type="checkbox" name="checkbox2" value="${selectCheckListAll.workNo}" /></td>
 							<td>${params.currentpageDB=params.currentpageDB+1}</td>
 							<td>
 							<c:choose>
@@ -166,11 +190,13 @@ function mutiDo(){
 		</div>
 		</div>
 		<div class="col-sm-12">
-		<c:if test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
-			<c:if test="${params.adminYn=='N'}">
-			<button class="btn btn-primary" type="button" onclick="mutiDo()">내가하기</button>
-			</c:if>
+			<c:if test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
+				<c:if test="${params.adminYn=='N'}">
+				<button class="btn btn-primary" type="button" onclick="mutiDo()">내가하기</button>
+				</c:if>
+			<button class="btn btn-primary" type="button" onclick="giveWork()">업무부여하기</button>
 			<button class="btn btn-default" type="button" onclick="go_multidel2()">삭제</button>
 			</c:if>
 		</div>
 		<input type="hidden" name="workNo" id="workNo"/>
+<!-- 		<input type="hidden" name="checkArray" id="checkArray"/> -->

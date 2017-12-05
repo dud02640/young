@@ -61,5 +61,10 @@ public class joinDAO extends AbstractDAO{
 		return (Map<String, Object>)selectOne("join.joinMemberCheck",params);
 	}
 
+	public int joinNum(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (int) selectOne("join.joinNum",params);
+	}
+
 
 }

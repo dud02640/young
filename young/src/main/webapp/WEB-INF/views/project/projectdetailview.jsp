@@ -72,23 +72,7 @@ $(function(){
 			});
 });
 });
-/* 팀원 추가 페이징 */
-function searchMember(pIndex){
-	$('input[name=selectPage]').val(pIndex);
-	var frm =$("#projectDetailForm").serialize();/* document.getElementById('projectDetailForm'); */
 
- 	$.ajax({
-		type:"POST",
-		url:"/project/projectJoinList.do",
-		data: frm,
-		success: function(data){
-			/* location.reload(); */
-			$("#optionModalInsertMemberId").empty();
-			$("#optionModalInsertMemberId").append(data);	
-		}
-	}); 
-}
-/* 팀원 추가 페이징 */
 
 function updateProject(){
 	var frm = document.getElementById('projectDetailForm');
@@ -174,6 +158,24 @@ function createcheckListModalIdPage(){
  		},	
  	});
  }
+ 
+/* 팀원 추가 페이징 */
+function searchMember(pIndex){
+	$('input[name=selectPage]').val(pIndex);
+	var frm =$("#projectDetailForm").serialize();/* document.getElementById('projectDetailForm'); */
+
+ 	$.ajax({
+		type:"POST",
+		url:"/project/projectJoinList.do",
+		data: frm,
+		success: function(data){
+			/* location.reload(); */
+			$("#optionModalInsertMemberId").empty();
+			$("#optionModalInsertMemberId").append(data);	
+		}
+	}); 
+}
+/* 팀원 추가 페이징 */
 function logout(){
 	var frm = document.getElementById('projectDetailForm');
 		alert("로그아웃");
@@ -538,11 +540,37 @@ function go_multidel(){
     </div>
   </div>
 </div>
-
 <input type="hidden" name="joinMemberCheck.userId" value="${joinMemberCheck.userId}"/>
 <!-- updateWorkListModal -->
 
+
+<!-- updateWorkListModal -->
+<div class="modal fade" id="giveWork">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<h4 class="modal-title">업무 부여하기</h4>
+        <button type="button" class="close" data-dismiss="modal" onclick="refresh()"><span>x</span></button>
+      </div>
+      <input type="hidden" name="workNo" id="workNo"/>
+      <div class="modal-body">
+        <div id="giveWorkId">
+      
+		</div>    
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="refresh()">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- updateWorkListModal -->
+
+
+
+
 <!-- checkListModal -->
+
 
 
 

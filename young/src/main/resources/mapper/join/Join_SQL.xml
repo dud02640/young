@@ -140,4 +140,13 @@
 		 	  and leaderYn="Y"
 		 	  and userDeleteYn="N"
 	</select> 
+	<select id="joinNum" parameterType="hashmap" resultType="int">
+	       select count(*)
+	         from joinm j
+	         left outer join member m
+	           on j.userId=m.userId
+	        where projectNo=#{projectNo}
+			  and userDeleteYn="N"
+	          and leaderYn="Y"
+	</select>
 </mapper>

@@ -163,23 +163,30 @@ function searchMember(pIndex){
 										<div class="mr-3">기관명:${list.institutionName}</div>
 										<div class="mr-3">팀장:
 											<c:forEach var="JoinId" items="${JoinId}">
-												<c:if test="${JoinId.joinProjectNo == list.projectNo and JoinId.leaderYn eq 'Y'}">
+											<c:choose>
+												<c:when test="${JoinId.joinProjectNo == list.projectNo and JoinId.leaderYn eq 'Y'}">
 													${JoinId.userName} 
-												</c:if>
+												</c:when>
+											</c:choose>
 											</c:forEach>
 										</div>
 										<div class="mr-3">팀원:
 										<c:forEach var="JoinId" items="${JoinId}">
-												<c:if test="${JoinId.joinProjectNo == list.projectNo}">
+											<c:choose>
+												<c:when test="${JoinId.joinProjectNo == list.projectNo}">
 													${JoinId.userName}
-												</c:if>
+												</c:when>
+											</c:choose>
 										</c:forEach>
 										</div>
 										<div class="mr-3">진행률:
 										<c:forEach var="WorkCheckList" items="${WorkCheckList}">
-											<c:if test="${list.projectNo == WorkCheckList.projectNo}">
+											<c:choose>
+											<c:when test="${list.projectNo == WorkCheckList.projectNo}">
 												${WorkCheckList.persent} %
-											</c:if>
+											</c:when>
+											</c:choose>
+											
 										</c:forEach>
 										</div>
 										<div class="mr-3">개발기간 : ${list.projectStartDate} ~
@@ -195,7 +202,7 @@ function searchMember(pIndex){
 						</c:forEach>
 					</table>
 			</div>
-						<!-- 페이징 -->
+		<!-- 페이징 -->
 		<div class="col-sm-12 col-md-7">
 		<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
 		<ul class="pagination">
@@ -232,8 +239,8 @@ function searchMember(pIndex){
 
 			</div>
 			</div>
-			<input type="hidden" id="mes" name="mes" >
-		<input type="hidden" name="projectNo" value=""/>
+		<input type="hidden" id="mes" name="mes" >
+		<input type="hidden" name="projectNo" />
 	</form>
 </body>
 </html>

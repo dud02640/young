@@ -80,7 +80,7 @@ function updateWorkList(workNo){
 			<c:forEach var="selectWorkListAll" items="${selectWorkListAll}" varStatus="status">
 			<tr>
 					<c:choose>
-						<c:when test="${params.adminYn=='Y'}">
+						<c:when test="${joinMemberCheck.leaderYn=='Y' || params.adminYn=='Y'}">
 							<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}"></td>
 						</c:when>
 						<c:when test="${params.adminYn=='N' && params.userId==selectWorkListAll.userId}">
@@ -108,7 +108,7 @@ function updateWorkList(workNo){
 					<c:choose>
 					<c:when test="${selectWorkListAll.userId==params.userId || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
 					<c:choose>
-	 					<c:when test="${params.adminYn=='Y'}">
+	 					<c:when test="${joinMemberCheck.leaderYn=='Y' || params.adminYn=='Y'}">
 							<td><a href="#checklist" onclick="workCancel(${selectWorkListAll.workNo})">취소하기</a></td>
 						</c:when> 
 						<c:when test="${params.adminYn=='N' && params.userId==selectWorkListAll.userId}">
@@ -157,7 +157,7 @@ function updateWorkList(workNo){
 	</div>
 	</div>
 	<div class="col-sm-12">
-	<c:if test="${joinMemberCheck.userId eq params.userId || params.adminYn=='Y'}">
+	<c:if test="${ joinMemberCheck.userId==params.userId || params.adminYn=='Y'}">
 		<button class="btn btn-default" type="button" onclick="go_multicancel()">취소</button>
 	</c:if>
 	</div>

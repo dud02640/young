@@ -23,7 +23,11 @@ function insertjoin(userId,userName){
 		
 	}); 
 }
+
+
+
 function deletejoin(userId,userName){
+
 	$('#mes').val("삭제 완료");
 	$('input[name=joinId]').val(userId);
 	$('input[name=userName]').val(userName);
@@ -75,6 +79,7 @@ function selectNReader(userId,userName){
 		},		
 	}); 
 }
+
 </script>
 <!--  -->
           <div class="form-group">
@@ -103,6 +108,9 @@ function selectNReader(userId,userName){
 							<td>${list.loginUserName}</td>
 							<td>${list.loginUserId}</td>
 							<c:choose>
+							<c:when test="${list.leaderYn eq 'Y' && joinNum==1}">
+								<td><button class="btn btn-default" type="button">삭제</button></td>
+							</c:when>
 							<c:when test="${list.loginUserId eq list.joinUserId && list.joinProjectNo eq params.projectNo}">
 								<td><button class="btn btn-primary" type="button" onclick="deletejoin('${list.loginUserId}','${list.loginUserName}');">삭제</button></td>
 							</c:when>
@@ -111,7 +119,10 @@ function selectNReader(userId,userName){
 							</c:otherwise>
 							</c:choose>
 							<c:choose>
-								<c:when test="${list.leaderYn eq 'Y'}">
+								<c:when test="${list.leaderYn eq 'Y' && joinNum==1}">
+								<td><button class="btn btn-default" type="button">팀장</button></td>
+								</c:when>
+								<c:when test="${list.leaderYn eq 'Y' }">
 								<td><button class="btn btn-danger" type="button" onclick="selectNReader('${list.loginUserId}','${list.loginUserName}')">*팀장</td>								
 								</c:when>
 								<c:when test="${list.leaderYn eq 'N'}">
@@ -123,6 +134,7 @@ function selectNReader(userId,userName){
 							</c:choose>
                 		</tr>
                 	</c:forEach>
+                	
              		</tbody>
                 </table>
               </div>

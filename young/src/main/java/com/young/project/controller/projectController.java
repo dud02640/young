@@ -187,9 +187,9 @@ public class projectController {
 	
 	@RequestMapping(value = "/project/insertProject.do")
 	public String insertProject(HttpServletResponse response,HttpServletRequest req,@RequestParam Map<String,Object> params){	
-
+		System.out.println(params);
 		String mes=URLEncoder.encode(params.get("mes").toString());
-
+		
 		HttpSession session = req.getSession();
 		String projectContent=(String) params.get("projectContent");
 		projectContent = projectContent.replace("\r\n","<br>");
@@ -198,8 +198,17 @@ public class projectController {
 		params.put("userId", session.getAttribute("userId"));
 		projectService.insertProject(params);
 		
+		// 프로젝트 생성자가 관리자이면 선택된 JoinId가 들어가고 사용자이면 자기 자신이JoinId로 들어가서 리더가 된다//
+		if(params.get("JoinId")!=null)
+			projectService.insertProjectLeader(params);
+		else {
+			params.put("JoinId",session.getAttribute("userId"));
+			projectService.insertProjectLeader(params);
+		}
+		/* */
 		return "redirect:/project/createproject.do?mes="+mes;
 	}
+	
 	@RequestMapping(value = "/project/updateProject.do")
 	public String updateProject(HttpServletRequest req,@RequestParam Map<String,Object> params,HttpServletResponse response,Model model) throws IOException {	
 		
@@ -299,7 +308,7 @@ public class projectController {
 		params.put("currentpageDB",currentpageDB*paging);				//0~9,10~19 10개씩 보여준다
 		params.put("startpage",startpage);
 		
-		
+		int joinNum = joinService.joinNum(params);
 		List<Map<String,Object>> joinlist = loginService.selectJoinList(params);
 		int membercnt= loginService.selectJoinCnt(params);			//member 총인원
 		
@@ -315,6 +324,7 @@ public class projectController {
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 		
+		mav.addObject("joinNum",joinNum);
 		mav.addObject("JoinId",JoinId);
 		mav.addObject("joinlist",joinlist);
 		mav.addObject("params",params);
@@ -440,7 +450,6 @@ public class projectController {
 		Map<String,Object> updateListModalPage= projectService.selectupdateListModalPage(params);
 		List<Map<String,Object>> selectCheckListAll = projectService.selectCheckListAll(params);
 																	
-
 		int selectCheckListAllCnt= projectService.selectCheckListAllCnt(params);			//member 총인원
 
 		if(selectCheckListAllCnt%paging!=0)							//paging으로 나누었을떄 0 이면 나뉜 페이지 보여줌
@@ -604,7 +613,7 @@ public class projectController {
 		
 		HttpSession session = req.getSession();
 		params.put("userId", session.getAttribute("userId"));
-		
+
 		for(String chk : checkbox) {
 			params.put("workNo", chk);
 			projectService.medo(params);
@@ -619,6 +628,59 @@ public class projectController {
 		return "forward:/project/projectDetailView.do";	
 	}
 	
+	@RequestMapping(value ="/project/giveWork.do")
+	public String giveWork(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException {
+		System.out.println(params);
+		//페이징//
+		int currentpage=(params.get("selectPage")==null||params.get("selectPage")==""? 1:Integer.parseInt(params.get("selectPage").toString()));
+		int startpage=(params.get("startpage")==null? 1:1);
+		int endpageNo=(params.get("endpageNo")==null? 10:10);
+		int endpage = 0;
+		int currentpageDB=0;				//DB에서의 시작 컬럼 번호
+		int paging=5;						//한페이지당 list 컬럼의 수
+
+		 //다음버튼 클릭시 첫페이지랑 마지막 페이지를 +10 
+		if(endpageNo<currentpage) {
+			startpage=endpageNo+1;
+			endpageNo+=10;	
+		}
+		 //이전버튼 클릭시 첫페이지를 -10 마지막 페이지는 startpage에서 +10 (endpageNo가 유동적으로 바뀌므로 startpage를 기준잡음)  
+		else if(currentpage<startpage) {	
+			startpage-=10;
+			endpageNo=startpage+9;
+		}						
+		
+		if(params.get("selectPage")==null||params.get("selectPage")=="") {
+			currentpageDB=0;
+			params.put("selectPage",startpage);
+		}else 
+			currentpageDB=Integer.parseInt(params.get("selectPage").toString())-1;
+		
+		params.put("paging",paging);
+		params.put("currentpageDB",currentpageDB*paging);				//0~9,10~19 10개씩 보여준다
+		params.put("startpage",startpage);
+		
+		int joinNum = joinService.joinNum(params);
+		List<Map<String,Object>> joinlist = loginService.selectJoinList(params);
+		int membercnt= loginService.selectJoinCnt(params);			//member 총인원
+		
+		if(membercnt%paging!=0)							//paging으로 나누었을떄 0 이면 나뉜 페이지 보여줌
+			endpage=membercnt/paging+1;					//맴버 총 수에서 10을 나누고 나머지 페이지
+		else
+			endpage=membercnt/paging;
+		
+		if(endpageNo>endpage) {
+			endpageNo=endpage;
+		}
+		params.put("currentpage", currentpage);
+		params.put("endpage",endpage);
+		params.put("endpageNo",endpageNo);
+
+		model.addAttribute("joinlist",joinlist);
+		model.addAttribute("params",params);
+
+		return "/project/giveWork";	
+	}
 	
 	@RequestMapping(value ="/project/workCancel.do")
 	public String workCancel(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
@@ -648,6 +710,39 @@ public class projectController {
 			projectService.workCancel(params);
 		}
 
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/project/projectDetailView.do";	
+	}
+	
+	@RequestMapping(value ="/project/giveWorkMulti.do")
+	public String giveWorkMulti(@RequestParam("checkbox2")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+	
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+
+		for(String chk : checkbox) {
+			params.put("workNo", chk);
+			projectService.giveWorkMulti(params);
+		}
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/project/projectDetailView.do";	
+	}
+	@RequestMapping(value ="/project/deletecheckListModalId.do")
+	public String deletecheckListModalId(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+		
+		projectService.deletecheckListModalId(params);
+		
 		String mes=(String) params.get("mes");
 		response.setContentType("text/html; charset=utf-8");
 		PrintWriter out = response.getWriter();

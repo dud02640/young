@@ -28,6 +28,9 @@ function insertProject(){
   	}else if($('input[name=projectEndDate]').val().trim()==""){
   			alert("종료일을 입력하시오");
   			$('input[name=projectEndDate]').focus();
+  	}else if($('input[name=leaderId]').val().trim()==""){
+  	  		alert("팀장을 선택하시오");
+  	  		$('input[name=leaderId]').focus();
   	}else{
 		$('#mes').val("프로젝트 생성 완료");
 		frm.action="/project/insertProject.do";
@@ -134,7 +137,7 @@ function searchMember(pIndex){
             <div class="form-row">
               <div class="col-md-6">
                 <label>*팀장 지정</label>
-                 <input name="leaderId" data-toggle="modal" data-target="#choiceLeader" onclick="searchMember()" class="form-control" placeholder="팀장 선택" type="text" value="${params.userId}" readOnly/>
+                 <input name="leaderId" data-toggle="modal" data-target="#choiceLeader" onclick="searchMember()" class="form-control" placeholder="팀장 선택" type="text" readOnly/>
                 </div>
             </div>
             </c:if>
@@ -157,8 +160,6 @@ function searchMember(pIndex){
       </div>
     </div>
   </div>
-  <input type="hidden" id="mes" name="mes"/>
-  
   
 <!-- 팀장선택 modal -->
 <div class="modal fade" id="choiceLeader">
@@ -166,7 +167,7 @@ function searchMember(pIndex){
     <div class="modal-content">
       <div class="modal-header">
       	<h4 class="modal-title">팀장 지정</h4>
-        <button type="button" class="close" data-dismiss="modal" onclick="refresh()"><span>x</span></button>
+        <button type="button" class="close" data-dismiss="modal"><span>x</span></button>
       </div>
       <div class="modal-body">
 		<div id="choiceLeaderId">
@@ -174,7 +175,7 @@ function searchMember(pIndex){
    		</div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="refresh()">닫기</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
       </div>
     </div>
   </div>

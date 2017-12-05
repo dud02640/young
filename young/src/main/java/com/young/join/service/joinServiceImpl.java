@@ -79,4 +79,10 @@ public class joinServiceImpl implements joinService{
 		return joinDAO.joinMemberCheck(params);
 	}
 
+	@Override
+	public int joinNum(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return joinDAO.joinNum(params);
+	}
+
 }

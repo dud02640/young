@@ -53,4 +53,10 @@ public interface projectService {
 
 	List<Map<String, Object>> iVwork(Map<String, Object> params);
 
+	void insertProjectLeader(Map<String, Object> params);
+
+	void giveWorkMulti(Map<String, Object> params);
+
+	void deletecheckListModalId(Map<String, Object> params);
+
 }

@@ -159,4 +159,22 @@ public class projectImpl implements projectService{
 		// TODO Auto-generated method stub
 		return projectDAO.iVwork(params);
 	}
+
+	@Override
+	public void insertProjectLeader(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		projectDAO.insertProjectLeader(params);
+	}
+
+	@Override
+	public void giveWorkMulti(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		projectDAO.giveWorkMulti(params);
+	}
+
+	@Override
+	public void deletecheckListModalId(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		projectDAO.deletecheckListModalId(params);
+	}
 }

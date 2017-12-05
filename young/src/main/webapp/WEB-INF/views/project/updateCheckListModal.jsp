@@ -59,6 +59,12 @@ function medo(workNo){
 	frm.action="/project/medo.do";
 	frm.submit();
 }
+function deletecheckListModalId(){
+	$('#mes').val("체크리스트 삭제 완료");
+	var frm =document.getElementById('projectDetailForm');
+	frm.action="/project/deletecheckListModalId.do";
+	frm.submit();
+}
 </script>
 <!--  -->       
           <div class="form-group">
@@ -104,7 +110,7 @@ function medo(workNo){
             </div>
       </div>
       <button type="button" class="btn btn-primary" onclick="updatecheckListModalId()">수정</button>
-      <button type="button" class="btn btn-primary" onclick="">삭제</button>
+      <button type="button" class="btn btn-primary" onclick="deletecheckListModalId()">삭제</button>
       <c:if test="${params.adminYn=='N'}">
 	  	<button class="btn btn-primary" type="button" onclick="medo(${updateListModalPage.workNo})">내가하기</button>
 	  </c:if>

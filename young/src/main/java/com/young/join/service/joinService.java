@@ -26,5 +26,7 @@ public interface joinService {
 
 	Map<String, Object> joinMemberCheck(Map<String, Object> params);
 
+	int joinNum(Map<String, Object> params);
+
 
 }

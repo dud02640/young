@@ -2,37 +2,25 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script>
-function searchMember(pIndex){
-	$('input[name=selectPage]').val(pIndex);
-	var frm =$("#projectForm").serialize();/* document.getElementById('projectDetailForm'); */
+$(function(){
+	$('form').submit(function() {return false;});
+});
 
- 	$.ajax({
-		type:"POST",
-		url:"/project/createProjectModal.do",
-		data: frm,
-		success: function(data){
-			/* location.reload(); */
-			$("#choiceLeaderId").empty();
-			$("#choiceLeaderId").append(data);	
-		}
-	}); 
-}
-function choiceLeader(leaderId){
-	$('input[name=JoinId]').val(leaderId);
-	var frm =$("#projectForm").serialize();
-	
- 	$.ajax({
-		type:"POST",
-		url:"/project/createproject.do",
-		data: frm,
-		success: function(data){
-			$('input[name=leaderId]').val(leaderId);
-			$("#choiceLeader").modal("hide");	
-		}
-	}); 
- 	
+
+function giveWorkMulti(userId){
+	$('#mes').val("업무 주기 완료");
+	$('#JoinId').val(userId);
+	var frm =document.getElementById('projectDetailForm');
+ 	  		var retVal = confirm("정말로 하시겠습니까?");
+ 	  		if(retVal){
+ 	  			frm.action="/project/giveWorkMulti.do";
+ 	  			frm.submit();
+ 	  		}else{
+ 	  			alert("취소");
+ 	  		}
 }
 </script>
+<!--  -->
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
@@ -47,17 +35,17 @@ function choiceLeader(leaderId){
                 <table class="table table-bordered dataTable" id="dataTable" role="grid" width="100%" cellspacing="0">
                 	<thead>
                 		<tr>
-                			<th>아이디</th>
                 			<th>이름</th>
-                			<th>추가선택</th>
+                			<th>아이디</th>
+                			<th>업무주기</th>
                 		</tr>
                 	</thead>
                 	<tbody>
-                	<c:forEach var="indivisualView" items="${indivisualView}" varStatus="status">
+                	<c:forEach var="list" items="${joinlist}" varStatus="status">
                 		<tr>
-							<td>${indivisualView.userId}</td>
-							<td>${indivisualView.userName}</td>
-							<td><button class="btn btn-default" onclick="choiceLeader('${indivisualView.userId}')">팀장선택</button></td>
+							<td>${list.loginUserName}</td>
+							<td>${list.loginUserId}</td>
+							<td><button class="btn btn-primary" onclick="giveWorkMulti('${list.loginUserId}')">업무주기</button></td>
                 		</tr>
                 	</c:forEach>
              		</tbody>
@@ -85,15 +73,15 @@ function choiceLeader(leaderId){
 			<c:if test="${params.endpage != params.currentpage}">
 				<li class="paginate_button page-item next"><button name="next" class="page-link" onclick="searchMember(${params.selectPage +1})">다음</button></li>
 			</c:if>
-		<input type="hidden" name="JoinId" />
+		<input type="hidden" id="JoinId" name="JoinId" value=""/>
 		<input type="hidden" name="userName" value=""/>
 		<input type="hidden" name="selectPage" value="${params.selectPage}"/>
 		<input type="hidden" name="underPaging" value=""/>
 		<input type="hidden" name="startpage" value="${params.startpage}"/>
 		<input type="hidden" name="endpageNo" value="${params.endpageNo}"/>
 		<input type="hidden" name="projectNo" value="${projectdetail.projectNo}"/>
-
-	  	<input type="hidden" id="mes" name="mes" >
+		
+	  	<input type="hidden" id="mes" name="mes"/>
 		</ul>
 		</div>
 		</div>

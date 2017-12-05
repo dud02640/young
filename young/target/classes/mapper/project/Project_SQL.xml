@@ -63,7 +63,9 @@
 		 </if>
 	</select>
 	<insert id="insertProject" parameterType="hashmap">
-	begin
+		<selectKey resultType="int" keyProperty="seq"> 
+			select ifnull(max(CAST(p.projectNo as signed))+1,0) from project p 
+		</selectKey>	
 		insert into Project
 		(
 			projectNo,
@@ -89,18 +91,39 @@
 			#{projectStartDate},
 			#{projectEndDate},
 			<choose>
-			 	<when test="projectState==1">"bg-primary"</when>
-			 	<when test="projectState==2">"bg-warning"</when>
-			 	<when test="projectState==3">"bg-danger"</when>
-			 </choose> ,
+			 	<when test="projectState==1">"bg-primary",</when>
+			 	<when test="projectState==2">"bg-warning",</when>
+			 	<when test="projectState==3">"bg-danger",</when>
+			 </choose>
 			"N",
 			now(),
 			now(),
 			#{userId},
 			#{userId}
-		)
-
+				)
 	</insert>
+	<insert id="insertProjectLeader" parameterType="hashmap"> 
+		insert into joinm(
+			projectNo,
+			userId,
+			leaderYN
+		)values(
+			(select ifnull(max(CAST(p.projectNo as signed)),0) from project p order by p.projectNo),
+			#{leaderId},
+			'Y'
+		)	
+	</insert>
+	
+	<update id="giveWorkMulti" parameterType="hashmap">
+			 update workchecklist
+			    set state="진행중",
+					updateDate=now(),
+					updateUserId=#{userId},
+					userId=#{JoinId}
+		  where projectNo=#{projectNo}
+		  	and workNo=#{workNo}
+	</update>
+	
 	<select id="selectProjectDetail" parameterType="hashmap" resultType="hashmap">
 		select  projectNo,
 				projectName,
@@ -279,10 +302,10 @@
 		  from workchecklist
 		 where projectNo=#{projectNo}
 		   and (state="신규" or state="진행완료")
-		  <if test="searchkeyword != null or searchkeyword != '' "> 
+		  <if test="searchkeyword2 != null or searchkeyword2 != '' "> 
 			 <choose>
-			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword2},'%')</when>
+			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword2},'%')</when>
 			 </choose>
 		 </if>
 		 order by (case state
@@ -297,10 +320,10 @@
 		  from workchecklist
 		 where projectNo=#{projectNo}
 		   and (state="신규" or state="진행완료")
-		  <if test="searchkeyword != null or searchkeyword != '' "> 
+		  <if test="searchkeyword2 != null or searchkeyword2 != '' "> 
 			 <choose>
-			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword2},'%')</when>
+			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword2},'%')</when>
 			 </choose>
 		 </if>
 	</select>
@@ -356,4 +379,12 @@
        where projectDeleteYn="N"
        group by userId
 	</select>
+	
+	<delete id="deletecheckListModalId" parameterType="hashmap">
+		delete 
+		  from workchecklist
+		 where projectNo=#{projectNo}
+		   and workNo=#{workNo}
+	</delete>
+	
 </mapper>
