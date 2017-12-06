@@ -17,7 +17,7 @@ function searchMember(pIndex){
 		}
 	}); 
 }
-function choiceLeader(leaderId){
+function choiceLeader(leaderId,userName){
 	$('input[name=JoinId]').val(leaderId);
 	var frm =$("#projectForm").serialize();
 	
@@ -26,6 +26,7 @@ function choiceLeader(leaderId){
 		url:"/project/createproject.do",
 		data: frm,
 		success: function(data){
+			$('input[name=leaderName]').val(userName);
 			$('input[name=leaderId]').val(leaderId);
 			$("#choiceLeader").modal("hide");	
 		}
@@ -47,17 +48,17 @@ function choiceLeader(leaderId){
                 <table class="table table-bordered dataTable" id="dataTable" role="grid" width="100%" cellspacing="0">
                 	<thead>
                 		<tr>
-                			<th>아이디</th>
                 			<th>이름</th>
+                			<th>아이디</th>
                 			<th>추가선택</th>
                 		</tr>
                 	</thead>
                 	<tbody>
                 	<c:forEach var="indivisualView" items="${indivisualView}" varStatus="status">
                 		<tr>
-							<td>${indivisualView.userId}</td>
 							<td>${indivisualView.userName}</td>
-							<td><button class="btn btn-default" onclick="choiceLeader('${indivisualView.userId}')">팀장선택</button></td>
+							<td>${indivisualView.userId}</td>
+							<td><button class="btn btn-default" onclick="choiceLeader('${indivisualView.userId}','${indivisualView.userName}')">팀장선택</button></td>
                 		</tr>
                 	</c:forEach>
              		</tbody>

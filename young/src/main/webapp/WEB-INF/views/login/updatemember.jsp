@@ -254,7 +254,7 @@
          	삭제
           </button>
           </c:if>
-          <a href="/login/memberlist.do" class="btn btn-primary"  >
+          <a href="/login/memberlist.do" class="btn btn-primary" >
          	뒤로
           </a>
           </div>

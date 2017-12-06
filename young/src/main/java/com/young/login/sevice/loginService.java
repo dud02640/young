@@ -36,4 +36,6 @@ public interface loginService {
 
 	List<Map<String, Object>> memberListView(Map<String, Object> params);
 
+	Map<String, Object> userInfo(Map<String, Object> params);
+
 }

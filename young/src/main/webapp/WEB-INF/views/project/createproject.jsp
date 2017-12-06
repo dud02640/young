@@ -137,7 +137,8 @@ function searchMember(pIndex){
             <div class="form-row">
               <div class="col-md-6">
                 <label>*팀장 지정</label>
-                 <input name="leaderId" data-toggle="modal" data-target="#choiceLeader" onclick="searchMember()" class="form-control" placeholder="팀장 선택" type="text" readOnly/>
+                 <input name="leaderName" data-toggle="modal" data-target="#choiceLeader" onclick="searchMember()" class="form-control" placeholder="팀장 선택" type="text" readOnly/>
+                 <input type="hidden" name="leaderId" id="leaderId"/>
                 </div>
             </div>
             </c:if>

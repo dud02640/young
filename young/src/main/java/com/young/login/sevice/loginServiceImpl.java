@@ -103,4 +103,10 @@ public class loginServiceImpl implements loginService{
 		// TODO Auto-generated method stub
 		return loginDAO.memberListView(params);
 	}
+
+	@Override
+	public Map<String, Object> userInfo(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.userInfo(params);
+	}
 }

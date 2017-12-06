@@ -304,8 +304,13 @@
 		   and (state="신규" or state="진행완료")
 		  <if test="searchkeyword2 != null or searchkeyword2 != '' "> 
 			 <choose>
-			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword2},'%')</when>
-			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword2},'%')</when>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword2},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword2},'%')</when>
+			 </choose>
+			 <choose>
+			 	<when test="searchOption2==0">and state in("신규","진행완료") </when>
+			 	<when test="searchOption2==1">and state = "신규" </when>
+			 	<when test="searchOption2==2">and state = "진행완료" </when>
 			 </choose>
 		 </if>
 		 order by (case state
@@ -324,6 +329,10 @@
 			 <choose>
 			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword2},'%')</when>
 			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword2},'%')</when>
+			 </choose>
+			 <choose>
+			 	<when test="searchOption2==1">and state = "신규"</when>
+			 	<when test="searchOption2==2">and state = "진행완료"</when>
 			 </choose>
 		 </if>
 	</select>
@@ -386,5 +395,20 @@
 		 where projectNo=#{projectNo}
 		   and workNo=#{workNo}
 	</delete>
-	
+	<select id="workNum" parameterType="hashmap" resultType="int">
+        select count(*) 
+          from workchecklist
+         where userId=#{joinId}
+           and projectNo=#{projectNO}
+           and state="진행중";
+	</select>
+	<select id="userProjectInfo" parameterType="hashmap" resultType="hashmap">
+		select p.projectName as projectName
+		  from project p
+		  left outer join joinm j
+		    on p.projectNo=j.projectNo
+		 where p.projectDeleteYn="N"
+		   and userId=#{userId}
+		   and p.projectState!="bg-success"
+	</select>
 </mapper>

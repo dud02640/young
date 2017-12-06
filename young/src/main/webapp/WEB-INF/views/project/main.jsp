@@ -97,7 +97,7 @@ function searchMember(pIndex){
 			</button>
 			<!--  -->	
 			</span> <a class="navbar-brand" href="/project/main.do">&emsp;&emsp;&emsp; Code-Farm현황판</a>
-			<label class="navbar-brand"><%=session.getAttribute("userId")%>님
+			<label class="navbar-brand"><%=session.getAttribute("userName")%>(<%=session.getAttribute("userId")%>)님
 			</label>
 			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" align="right">
 				<span class="navbar-toggler-icon"></span>
@@ -158,8 +158,8 @@ function searchMember(pIndex){
 									<c:if test="${params.adminYn=='Y'}">
 										<input type="checkbox" name="projectcheckbox" value="${list.projectNo}" />
 									</c:if>
-										<div class="mr-3">프로젝트명:${list.projectName} 
-										${list.projectStateName}</div>
+										<div class="mr-3">프로젝트명[상태]:${list.projectName} 
+										[${list.projectStateName}]</div>
 										<div class="mr-3">기관명:${list.institutionName}</div>
 										<div class="mr-3">팀장:
 											<c:forEach var="JoinId" items="${JoinId}">

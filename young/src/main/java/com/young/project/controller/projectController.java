@@ -308,7 +308,10 @@ public class projectController {
 		params.put("currentpageDB",currentpageDB*paging);				//0~9,10~19 10개씩 보여준다
 		params.put("startpage",startpage);
 		
-		int joinNum = joinService.joinNum(params);
+		int leaderNum = joinService.leaderNum(params);			//리더의 수
+		int joinNum = joinService.joinNum(params);			//팀원의 수
+		int workNum = projectService.workNum(params);		//팀원의 작업량
+		
 		List<Map<String,Object>> joinlist = loginService.selectJoinList(params);
 		int membercnt= loginService.selectJoinCnt(params);			//member 총인원
 		
@@ -324,8 +327,10 @@ public class projectController {
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 		
+		mav.addObject("leaderNum",leaderNum);
 		mav.addObject("joinNum",joinNum);
 		mav.addObject("JoinId",JoinId);
+		mav.addObject("workNum",workNum);
 		mav.addObject("joinlist",joinlist);
 		mav.addObject("params",params);
 		mav.setViewName("/project/insertdeleteJoinModal");		
@@ -574,6 +579,7 @@ public class projectController {
 		
 		return "forward:/project/projectDetailView.do";	
 	}
+	
 	@RequestMapping(value ="/project/completeWorkList.do")
 	public String completeWorkList(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
 		
@@ -608,6 +614,7 @@ public class projectController {
 		
 		return "forward:/project/projectDetailView.do";	
 	}
+	
 	@RequestMapping(value ="/project/mutiDo.do")
 	public String mutiDo(@RequestParam("checkbox2")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
 		
@@ -699,8 +706,25 @@ public class projectController {
 		return "forward:/project/projectDetailView.do";	
 	}
 	
+	@RequestMapping(value ="/project/workComplete.do")
+	public String workComplete(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+		
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		
+		projectService.updateCompleteWorkList(params);
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/project/projectDetailView.do";	
+	}
+	
 	@RequestMapping(value ="/project/workMultiCancel.do")
-	public String workMultiCancel(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+	public String workMultiCancel(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
 		
 		HttpSession session = req.getSession();
 		params.put("userId", session.getAttribute("userId"));
@@ -719,6 +743,26 @@ public class projectController {
 		return "forward:/project/projectDetailView.do";	
 	}
 	
+	@RequestMapping(value ="/project/workMultiComplete.do")
+	public String workMultiComplete(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
+		
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		
+		for(String chk : checkbox) {
+			params.put("workNo", chk);
+			projectService.updateCompleteWorkList(params);
+		}
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/project/projectDetailView.do";	
+	}
+
 	@RequestMapping(value ="/project/giveWorkMulti.do")
 	public String giveWorkMulti(@RequestParam("checkbox2")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
 	
@@ -738,6 +782,7 @@ public class projectController {
 		
 		return "forward:/project/projectDetailView.do";	
 	}
+	
 	@RequestMapping(value ="/project/deletecheckListModalId.do")
 	public String deletecheckListModalId(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
 		

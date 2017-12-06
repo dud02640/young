@@ -38,13 +38,44 @@ function go_multicancel(){
  			alert("삭제할 업무를 하나 이상 선택하십시오.");
  		}
 }
+function go_multicomplete(){
+	$('#mes').val("업무 완료");
+	var frm =document.getElementById('projectDetailForm');
+		if($('input:checkbox[name=checkbox]:checked').length>0){
+ 	  		var retVal = confirm("정말로 완료 하시겠습니까?");
+ 	  		if(retVal){
+ 	  			frm.action="/project/workMultiComplete.do";
+ 	  			frm.submit();
+ 	  		}else{
+ 	  			alert("취소");
+ 	  		}
+		}else{
+ 			alert("완료할 업무를 하나 이상 선택하십시오.");
+ 		}
+}
 function workCancel(workNo){
 	$('#mes').val("취소 완료");
 	$('#workNo').val(workNo);
 	var frm=document.getElementById('projectDetailForm');
-	frm.action="/project/workCancel.do";
-	frm.submit();
+ 		var retVal = confirm("정말로 취소 하시겠습니까?");
+ 		if(retVal){
+ 			frm.action="/project/workCancel.do";
+ 			frm.submit();
+ 		}else{
+ 			alert("취소");
+ 		}
 }
+function workComplete(workNo){
+	$('#mes').val("업무 완료");
+	$('#workNo').val(workNo);
+	
+	var frm=document.getElementById('projectDetailForm');
+ 	frm.action="/project/workComplete.do";
+ 	frm.submit();
+
+}
+
+
 function updateWorkList(workNo){
 	$('#workNo').val(workNo);
 }
@@ -73,7 +104,12 @@ function updateWorkList(workNo){
 			<th>기간</th>
 			<th>진행자</th>
 			<th>진행상태</th>
-			<th>취소 </th>
+			<c:choose>
+			<c:when test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
+				<th>취소 </th>
+				<th>완료 </th>				
+			</c:when>
+			</c:choose>
 			</tr>
 		</thead>
 		<tbody>
@@ -110,17 +146,21 @@ function updateWorkList(workNo){
 					<c:choose>
 	 					<c:when test="${joinMemberCheck.leaderYn=='Y' || params.adminYn=='Y'}">
 							<td><a href="#checklist" onclick="workCancel(${selectWorkListAll.workNo})">취소하기</a></td>
+							<td><a href="#checklist" onclick="workComplete(${selectWorkListAll.workNo})">완료하기</a></td>
 						</c:when> 
 						<c:when test="${params.adminYn=='N' && params.userId==selectWorkListAll.userId}">
 							<td><a href="#checklist" onclick="workCancel(${selectWorkListAll.workNo})">취소하기</a></td>
+							<td><a href="#checklist" onclick="workComplete(${selectWorkListAll.workNo})">완료하기</a></td>
 						</c:when>
 					<c:otherwise>
 					<td>취소하기</td>
+					<td>완료하기</td>
 					</c:otherwise>
 					</c:choose>
 					</c:when>
 					<c:otherwise>
 					<td>취소하기</td>
+					<td>완료하기</td>
 					</c:otherwise>
 					</c:choose>
 			</tr>
@@ -158,6 +198,7 @@ function updateWorkList(workNo){
 	</div>
 	<div class="col-sm-12">
 	<c:if test="${ joinMemberCheck.userId==params.userId || params.adminYn=='Y'}">
+		<button class="btn btn-primary" type="button" onclick="go_multicomplete()">완료</button>
 		<button class="btn btn-default" type="button" onclick="go_multicancel()">취소</button>
 	</c:if>
 	</div>

@@ -79,7 +79,14 @@ $(function(){
 	});
 
 });
-
+/* function openMemo(){
+	var div = document.createElement('div');
+	div.innerHTML=document.getElementById('memoDiv').innerHTML;
+	document.getElementById('memofield').appendChild(div);
+}
+function removeMemo(obj){
+	document.getElementById('memofield').removeChild(obj);
+} */
 </script>
 <!--  -->       
           <div class="form-group">
@@ -123,28 +130,25 @@ $(function(){
 				</div>
               </div>
             </div>
-            <div class="form-row">
-              <div class="col-md-6">
-                <div class="input-group-btn" id="memo" style="display:none">
-                <textarea class="form-control" > </textarea>
-				</div>
-              </div>
-            </div>
             
-<!--             <div class="form-row">
+<!-- 			<div class="form-row" style="display:none">
               <div class="col-md-6">
                 <label>*메모</label>
-                <div class="input-group-btn">
-                <textarea name="memo" id="memo" class="form-control"></textarea>
+                <div id="memoDiv" class="input-group-btn">
+                	<input type="text" class="form-control">
+                	<button type="button" class="btn btn-default" onclick="">입력완료</button>
+                	<button type="button" class="btn btn-default" onclick="removeMemo(this)">삭제</button>
 				</div>
               </div>
+            </div> 
+            <div id="memofield">
             </div> -->
       </div>
       <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
-      <button type="button" class="btn btn-primary" onclick="updateWorkListModalId()">수정</button>
+      	<button type="button" class="btn btn-primary" onclick="updateWorkListModalId()">수정</button>
       </c:if>
-      <button type="button" id="openMemo" class="btn btn-primary" onclick="openMemo()">메모작성</button>
-      <button type="button" id="createMemo" class="btn btn-primary" onclick="createMemo()" style="display:none">메모생성</button>
+<!--       <button type="button" class="btn btn-primary" onclick="openMemo()">메모작성</button> -->
       <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
+        <button type="button" class="btn btn-primary" onclick="workCancel(${updateWorkListModalView.workNo})">취소하기</button>
       	<button type="button" class="btn btn-primary" onclick="completeWorkList()">완료하기</button>
 	  </c:if>

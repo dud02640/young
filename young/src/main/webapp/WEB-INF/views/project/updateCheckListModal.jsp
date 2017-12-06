@@ -60,10 +60,15 @@ function medo(workNo){
 	frm.submit();
 }
 function deletecheckListModalId(){
-	$('#mes').val("체크리스트 삭제 완료");
+	$('#mes').val("삭제 완료");
 	var frm =document.getElementById('projectDetailForm');
-	frm.action="/project/deletecheckListModalId.do";
-	frm.submit();
+ 	  		var retVal = confirm("정말로 삭제 하시겠습니까?");
+ 	  		if(retVal){
+ 	  			frm.action="/project/deletecheckListModalId.do";
+ 	  			frm.submit();
+ 	  		}else{
+ 	  			alert("취소");
+ 	  		}
 }
 </script>
 <!--  -->       

@@ -21,18 +21,18 @@ function searchMember(pIndex){
 		frm.submit();	
 }
 /* 페이징 */
-	function logout() {
-		var frm = document.getElementById('mainForm');
-		alert("로그아웃");
-		frm.action = "/login/logout.do";
-		frm.submit();
-	}
-
-	function searchProject() {
-		
-		
-	}
-
+function logout() {
+	var frm = document.getElementById('mainForm');
+	alert("로그아웃");
+	frm.action = "/login/logout.do";
+	frm.submit();
+}
+function userIndivisualView(userId){
+	$("#userId").val(userId);
+	var frm = document.getElementById('mainForm');
+	frm.action = "/login/userIndivisualView.do";
+	frm.submit();
+}
 </script>
 <title>Code-Farm 현황판</title>
 </head>
@@ -43,21 +43,21 @@ function searchMember(pIndex){
 		<div class="input-group">
 			<span class="input-group-btn" > 
 			<!-- 검색 -->
-			<select class="form-control" name="searchOption1" width="1000">
-					<option value="1" ${params.searchOption1 eq "1" ? "selected" : ""}>이름</option>
-					<option value="2" ${params.searchOption1 eq "2" ? "selected" : ""}>직책</option>
-					<option value="3" ${params.searchOption1 eq "3" ? "selected" : ""}>팀</option>
-					<option value="4" ${params.searchOption1 eq "4" ? "selected" : ""}>프로젝트</option>
+			<select class="form-control" name="searchOption" width="1000">
+					<option value="1" ${params.searchOption eq "1" ? "selected" : ""}>이름</option>
+					<option value="2" ${params.searchOption eq "2" ? "selected" : ""}>직책</option>
+					<option value="3" ${params.searchOption eq "3" ? "selected" : ""}>소속</option>
+					
 			</select>
 			</span> 
 			<span class="input-group-btn"> 
 			<input class="form-control" type="text" name="searchkeyword" value="${params.searchkeyword}" />
-			<button class="btn btn-primary" onclick="">
+			<button class="btn btn-primary" onclick="searchMember()">
 				<i class="fa fa-search"></i>
 			</button>
 			<!--  -->	
 			</span> <a class="navbar-brand" href="/project/main.do">&emsp;&emsp;&emsp; Code-Farm현황판</a>
-			<label class="navbar-brand"><%=session.getAttribute("userId")%>님
+			<label class="navbar-brand"><%=session.getAttribute("userName")%>(<%=session.getAttribute("userId")%>)님
 			</label>
 			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" align="right">
 				<span class="navbar-toggler-icon"></span>
@@ -105,23 +105,15 @@ function searchMember(pIndex){
 								<div class="card text-white o-hidden h-5 bg-info">
 									<!-- 색 치환 -->
 									<div class="card-body">										
-										<div class="mr-3">${indivisualView.userPosition} ${indivisualView.userRank} <h4>${indivisualView.userName}</h4></div>
+										<div class="mr-3">${indivisualView.userPosition} / ${indivisualView.userRank} <h4>${indivisualView.userName}</h4></div>
 										<div class="mr-3"> </div>
 										<div class="mr-3">*진행중인 프로젝트</div>
-											<c:forEach var="iVproject" items="${iVproject}">
-		 										<c:if test="${indivisualView.userId==iVproject.userId}">
-													<li class="mr-3"> ${iVproject.projectName}</li>
-												</c:if> 
-											</c:forEach>
+												<li class="mr-3"> ${indivisualView.projectName}</li>
 										<div class="mr-3">업무량:
-											<c:forEach var="iVwork" items="${iVwork}" varStatus="status">
-		 										<c:if test="${indivisualView.userId==iVwork.userId}">
-													<div class="mr-3">${iVwork.count}</div>
-												</c:if> 
-											</c:forEach>
+												<div class="mr-3">${indivisualView.workCount}</div>
 										</div>
 									</div>
-									<button class="card-footer text-white clearfix small z-1">
+									<button class="card-footer text-white clearfix small z-1" onclick="userIndivisualView('${indivisualView.userId}')">
 										<span class="float-left">자세히</span> <span class="float-right">
 											<i class="fa fa-angle-right"></i>
 									</span>
@@ -162,6 +154,7 @@ function searchMember(pIndex){
 			</div>
 			</div>
 			<input type="hidden" id="mes" name="mes" >
+			<input type="hidden" id="userId" name="userId" />
 		<input type="hidden" name="projectNo" value=""/>
 	</form>
 </body>

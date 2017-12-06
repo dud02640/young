@@ -155,8 +155,9 @@ public class loginController {
 		if(logincheck.get("userId").equals(params.get("userId"))&&logincheck.get("userPw").equals(params.get("userPw"))) {
 			HttpSession session=req.getSession();
 			session.setAttribute("userId",logincheck.get("userId"));
+			session.setAttribute("userName",logincheck.get("userName"));
 			session.setAttribute("adminYn",logincheck.get("adminYn"));
-			
+
 			System.out.println(session.getAttribute("uesrId"));
 			returnUrl= "redirect:/project/main.do";
 		}else {
@@ -276,6 +277,28 @@ public class loginController {
 		model.addAttribute("indivisualView",indivisualView);
 		
 		return "/login/indivisual";
+	}
+	@RequestMapping(value = "/login/userIndivisualView.do")
+	public String userIndivisualView(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model){
+		System.out.println(params);
+		HttpSession session = req.getSession();
+		session.setAttribute("getuserId", req.getParameter("userId"));
+
+		if(session.getAttribute("getuserId")==null) {
+			return "forward:/login/indivisualView.do";
+		}else {
+			Map<String,Object> userInfo = loginService.userInfo(params);
+			List<Map<String,Object>> userProjectInfo = projectService.userProjectInfo(params);
+			
+			params.put("userId",session.getAttribute("userId"));
+			params.put("adminYn",session.getAttribute("adminYn"));
+			
+			model.addAttribute("params", params);
+			model.addAttribute("userInfo", userInfo);
+			model.addAttribute("userProjectInfo", userProjectInfo);
+			return "/login/userIndivisualView";
+		}
+
 	}
 	
 }

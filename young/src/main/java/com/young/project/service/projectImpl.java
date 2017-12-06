@@ -177,4 +177,16 @@ public class projectImpl implements projectService{
 		// TODO Auto-generated method stub
 		projectDAO.deletecheckListModalId(params);
 	}
+
+	@Override
+	public int workNum(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return projectDAO.workNum(params);
+	}
+
+	@Override
+	public List<Map<String, Object>> userProjectInfo(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return projectDAO.userProjectInfo(params);
+	}
 }

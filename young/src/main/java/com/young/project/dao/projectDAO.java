@@ -142,4 +142,14 @@ public class projectDAO extends AbstractDAO{
 		// TODO Auto-generated method stub
 		delete("project.deletecheckListModalId",params);
 	}
+
+	public int workNum(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (int) selectOne("project.workNum",params);
+	}
+
+	public List<Map<String, Object>> userProjectInfo(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return selectList("project.userProjectInfo",params);
+	}
 }

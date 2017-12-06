@@ -83,6 +83,11 @@ public class loginDAO extends AbstractDAO{
 		return selectList("login.memberListView",params);
 	}
 
+	public Map<String, Object> userInfo(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (Map<String, Object>)selectOne("login.userInfo",params);
+	}
+
 
 
 }

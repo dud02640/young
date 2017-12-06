@@ -88,12 +88,17 @@ function mutiDo(){
               <div class="col-md-6">
                 <div class="input-group-btn">
            		<span class="input-group-btn"> 
-				<select class="form-control" name="searchOption">
-						<option value="1" ${params.searchOption eq "1" ? "selected" : ""}>업무번호</option>
-						<option value="2" ${params.searchOption eq "2" ? "selected" : ""}>업무명</option>
+				<select class="form-control" name="searchOption1">
+						<option value="1" ${params.searchOption1 eq "1" ? "selected" : ""}>업무번호</option>
+						<option value="2" ${params.searchOption1 eq "2" ? "selected" : ""}>업무명</option>
+				</select> 
+				<select class="form-control" name="searchOption2">
+						<option value="0" ${params.searchOption2 eq "0" ? "selected" : ""}>진행상태</option>
+						<option value="1" ${params.searchOption2 eq "1" ? "selected" : ""}>신규</option>
+						<option value="2" ${params.searchOption2 eq "2" ? "selected" : ""}>진행완료</option>
 				</select> 
                 <input name="searchkeyword2" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword2}" onkeypress="if(event.keyCode==13){searchWork2();}"/>
-                <button class="btn btn-primary" type="submit" onclick="searchWork2()">검색</button>
+                <button class="btn btn-primary" type="button" onclick="searchWork2()">검색</button>
                 </span>
 				</div>	
               </div>
@@ -192,10 +197,12 @@ function mutiDo(){
 		<div class="col-sm-12">
 			<c:if test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
 				<c:if test="${params.adminYn=='N'}">
-				<button class="btn btn-primary" type="button" onclick="mutiDo()">내가하기</button>
+					<button class="btn btn-primary" type="button" onclick="mutiDo()">내가하기</button>
 				</c:if>
-			<button class="btn btn-primary" type="button" onclick="giveWork()">업무부여하기</button>
-			<button class="btn btn-default" type="button" onclick="go_multidel2()">삭제</button>
+				<c:if test="${joinMemberCheck.leaderYn=='Y' || params.adminYn=='Y'}">
+					<button class="btn btn-primary" type="button" onclick="giveWork()">업무부여</button>
+				</c:if>
+				<button class="btn btn-default" type="button" onclick="go_multidel2()">삭제</button>
 			</c:if>
 		</div>
 		<input type="hidden" name="workNo" id="workNo"/>

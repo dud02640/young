@@ -240,7 +240,7 @@ function go_multidel(){
 
 		<div class="input-group">
 		<a class="navbar-brand" href="/project/main.do">Code-Farm 현황판</a>
-		<label class="navbar-brand"><%= session.getAttribute("userId") %>님 </label>
+		<label class="navbar-brand"><%=session.getAttribute("userName")%>(<%=session.getAttribute("userId")%>)님 </label>
 	    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" align="right">
 	      <span class="navbar-toggler-icon" ></span>
 	    </button>

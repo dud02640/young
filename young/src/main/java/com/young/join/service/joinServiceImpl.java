@@ -80,6 +80,12 @@ public class joinServiceImpl implements joinService{
 	}
 
 	@Override
+	public int leaderNum(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return joinDAO.leaderNum(params);
+	}
+
+	@Override
 	public int joinNum(Map<String, Object> params) {
 		// TODO Auto-generated method stub
 		return joinDAO.joinNum(params);

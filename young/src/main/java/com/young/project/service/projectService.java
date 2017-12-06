@@ -59,4 +59,8 @@ public interface projectService {
 
 	void deletecheckListModalId(Map<String, Object> params);
 
+	int workNum(Map<String, Object> params);
+
+	List<Map<String, Object>> userProjectInfo(Map<String, Object> params);
+
 }

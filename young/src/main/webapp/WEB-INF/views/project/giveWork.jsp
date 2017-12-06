@@ -5,8 +5,23 @@
 $(function(){
 	$('form').submit(function() {return false;});
 });
-
-
+/* 페이징 */
+function searchMember3(pIndex){
+	$('input[name=selectPage]').val(pIndex);
+	
+	var frm =$("#projectDetailForm").serialize();
+	$.ajax({
+		type:"POST",
+		url:"/project/giveWork.do",
+		data: frm,
+		success: function(data){
+			/* location.reload(); */
+			$("#giveWorkId").empty();
+			$("#giveWorkId").append(data);	
+		}
+	}); 	
+}
+/* 페이징 */
 function giveWorkMulti(userId){
 	$('#mes').val("업무 주기 완료");
 	$('#JoinId').val(userId);
@@ -25,8 +40,8 @@ function giveWorkMulti(userId){
             <div class="form-row">
               <div class="col-md-6">
                 <div class="input-group-btn">
-                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="아이디,이름 검색" value="${params.searchkeyword}"/>
-                <button class="btn btn-primary" type="button" onclick="searchMember()">검색</button>
+                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="아이디,이름 검색" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchMember3();}"/>
+                <button class="btn btn-primary" type="button" onclick="searchMember3()">검색</button>
 				</div>	
               </div>
             </div>
@@ -37,7 +52,7 @@ function giveWorkMulti(userId){
                 		<tr>
                 			<th>이름</th>
                 			<th>아이디</th>
-                			<th>업무주기</th>
+                			<th>업무부여</th>
                 		</tr>
                 	</thead>
                 	<tbody>
@@ -45,7 +60,7 @@ function giveWorkMulti(userId){
                 		<tr>
 							<td>${list.loginUserName}</td>
 							<td>${list.loginUserId}</td>
-							<td><button class="btn btn-primary" onclick="giveWorkMulti('${list.loginUserId}')">업무주기</button></td>
+							<td><button class="btn btn-primary" onclick="giveWorkMulti('${list.loginUserId}')">업무부여</button></td>
                 		</tr>
                 	</c:forEach>
              		</tbody>
@@ -58,20 +73,20 @@ function giveWorkMulti(userId){
 		<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
 		<ul class="pagination">
 			<c:if test="${params.selectPage-1!=0}">
-			<li class="paginate_button page-item prvious disable"><button name="prv" class="page-link" onclick="searchMember(${params.selectPage - 1})">이전</button></li>
+			<li class="paginate_button page-item prvious disable"><button name="prv" class="page-link" onclick="searchMember3(${params.selectPage - 1})">이전</button></li>
 				</c:if>
 			<c:forEach var="pIndex" begin="${params.startpage}" end="${params.endpageNo}" step="1">
 				<c:choose>
 					<c:when test="${params.currentpage eq pIndex}">
-						<li id="pagingNumbering" class="paginate_button page-item active"><a class="page-link" href="#" onclick="searchMember(${pIndex})">${pIndex}</a></li>
+						<li id="pagingNumbering" class="paginate_button page-item active"><a class="page-link" href="#" onclick="searchMember3(${pIndex})">${pIndex}</a></li>
 					</c:when>
 					<c:otherwise>
-						<li id="pagingNumbering" class="paginate_button page-item"><a class="page-link" href="#" onclick="searchMember(${pIndex})">${pIndex}</a></li>
+						<li id="pagingNumbering" class="paginate_button page-item"><a class="page-link" href="#" onclick="searchMember3(${pIndex})">${pIndex}</a></li>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
 			<c:if test="${params.endpage != params.currentpage}">
-				<li class="paginate_button page-item next"><button name="next" class="page-link" onclick="searchMember(${params.selectPage +1})">다음</button></li>
+				<li class="paginate_button page-item next"><button name="next" class="page-link" onclick="searchMember3(${params.selectPage +1})">다음</button></li>
 			</c:if>
 		<input type="hidden" id="JoinId" name="JoinId" value=""/>
 		<input type="hidden" name="userName" value=""/>

@@ -148,31 +148,48 @@
 		  where userId=#{chk};
 	</update>
 	<select id="indivisualView" parameterType="hashmap" resultType="hashmap">
-		 select * 
-           from member m
-		  where userDeleteYn="N"
-		   	and adminYn="N"
+ SELECT M.USERID AS userId,
+				   M.USERNAME AS userName,
+				   M.USERRANK AS userRank,
+			       M.USERPOSITION AS userPosition,
+			       group_concat(P.PROJECTNAME) AS projectName,
+			       (SELECT COUNT(*) FROM workchecklist W
+			       LEFT OUTER JOIN PROJECT P
+			       ON P.PROJECTNO=W.PROJECTNO
+			       WHERE M.USERID=W.USERID
+			         AND P.PROJECTDELETEYN="N"
+					 AND W.STATE="진행중"
+			        group by W.USERID) AS workCount
+			  FROM MEMBER M
+				   LEFT OUTER JOIN JOINM J
+				ON M.USERID=J.USERID
+				   LEFT OUTER JOIN PROJECT P
+				ON J.PROJECTNO=P.PROJECTNO 
+			   and P.PROJECTDELETEYN="N"
+			   and p.projectState!="bg-success"
+			 WHERE M.USERDELETEYN="N"
+			   AND M.ADMINYN="N"
 		<if test="searchkeyword != null || searchkeyword != '' "> 
 			 <choose>
 			 	<when test="searchOption==1">and userName like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==2">and userId like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==3">and userPosition like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==4">and userRank like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and userPosition like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">and userRank like concat('%',#{searchkeyword},'%')</when>
 			 </choose> 
 		 </if>
+		 GROUP  BY M.USERID
 		 limit #{currentpageDB},#{paging}
 	</select>
 	
 	<select id="indivisualViewCnt" parameterType="hashmap" resultType="int">
-		 select count(*) 
-           from member m
-		  where userDeleteYn="N"
+  			SELECT count(*)
+			  FROM MEMBER M
+			 WHERE M.USERDELETEYN="N"
+			   AND M.ADMINYN="N"
 		<if test="searchkeyword != null || searchkeyword != '' "> 
 			 <choose>
 			 	<when test="searchOption==1">and userName like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==2">and userId like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==3">and userPosition like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==4">and userRank like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and userPosition like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">and userRank like concat('%',#{searchkeyword},'%')</when>
 			 </choose> 
 		 </if>
 	</select>
@@ -182,4 +199,10 @@
 		 where userDeleteYn="N"
 		   and adminYn="N"
 	</select>
+	<select id="userInfo" parameterType="hashmap" resultType="hashmap">
+		select * from member
+		 where userId=#{userId}
+		   and userDeleteYn="N"
+	</select>
+
 </mapper>
