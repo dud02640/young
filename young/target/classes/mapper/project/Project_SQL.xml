@@ -369,9 +369,11 @@
 		  	and workNo=#{workNo}
 	</update>
 	<select id="selectWorkCheckList" parameterType="hashmap" resultType="hashmap">
-	    select projectNo,truncate(count(case when state="진행완료" then 1 end)/count(*)*100,0) as persent
-		 from workchecklist  
+	
+	select projectNo,truncate(count(case when state="진행완료" then 1 end)/count(*)*100,0) as persent
+		 from workchecklist 
 		group by projectNo
+		
 	</select>
 	<select id="iVproject" parameterType="hashmap" resultType="hashmap">    
       select * 
@@ -399,8 +401,8 @@
         select count(*) 
           from workchecklist
          where userId=#{joinId}
-           and projectNo=#{projectNO}
-           and state="진행중";
+           and projectNo=#{projectNo}
+           and state="진행중"
 	</select>
 	<select id="userProjectInfo" parameterType="hashmap" resultType="hashmap">
 		select p.projectName as projectName
@@ -411,4 +413,50 @@
 		   and userId=#{userId}
 		   and p.projectState!="bg-success"
 	</select>
+	
+	<select id="userWorkList" parameterType="hashmap" resultType="hashmap">
+			select w.projectNo as projectNo,
+			   w.workNo as workNo,
+			   w.workNum as workNum,
+			   w.workSubject as workSubject,
+			   concat(substring(w.startDate,1,4),".",substring(w.startDate,5,2),".",substring(w.startDate,7,2)) as startDate,
+			   concat(substring(w.endDate,1,4),".",substring(w.endDate,5,2),".",substring(w.endDate,7,2)) as endDate,
+			   w.state as state,
+			   w.memo as memo,
+               m.userName as userName,
+               m.userId as userId
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		  left outer join project p
+			on p.projectNo=w.projectNo
+		 where m.userId=#{userId}
+		   and w.state="진행중"
+           and p.projectDeleteYn="N"
+         <if test="searchkeyword1 != null or searchkeyword1 != '' "> 
+			 <choose>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword1},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword1},'%')</when>
+			 </choose>
+		 </if>
+		 limit #{currentpageDB},#{paging}
+	</select>
+	<select id="userWorkListCnt" parameterType="hashmap" resultType="int">
+		select count(*)
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		  left outer join project p
+			on p.projectNo=w.projectNo
+		 where m.userId=#{userId}
+		   and w.state="진행중"
+           and p.projectDeleteYn="N"
+		  <if test="searchkeyword1 != null or searchkeyword1 != '' "> 
+			 <choose>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword1},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword1},'%')</when>
+			 </choose>
+		 </if>
+	</select>
+	
 </mapper>

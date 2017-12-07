@@ -32,8 +32,6 @@ function go_multidel2(){
  	  		if(retVal){
  	  			frm.action="/project/workMultiDelete.do";
  	  			frm.submit();
- 	  		}else{
- 	  			alert("취소");
  	  		}
 		}else{
  			alert("삭제할 업무를 하나 이상 선택하십시오.");
@@ -79,7 +77,7 @@ function mutiDo(){
 		 	});
  	}
  	else{
-		alert("업부를 주기 위해서는 1개 이상의 업무를 선택해야합니다.");
+		alert("업무를 주기 위해서는 1개 이상의 업무를 선택해야합니다.");
 	}	
 } 
 </script>
@@ -115,7 +113,7 @@ function mutiDo(){
                 			<th>기간</th>
                 			<th>진행상태</th>
                 			<c:choose>
-                			<c:when test="${params.adminYn=='Y'}"><!-- 관리자가 보이게끔 설정해놓음 나중에 사용자한테는 Y로 해서 사용자가 보이도록  -->
+                			<c:when test="${params.adminYn=='Y' || joinMemberCheck.userId==null}"><!-- 관리자가 보이게끔 설정해놓음 나중에 사용자한테는 Y로 해서 사용자가 보이도록  -->
 							</c:when>
 							<c:otherwise>
 							<th>하기</th>
@@ -128,16 +126,7 @@ function mutiDo(){
                 		<tr>
                 			<td><input type="checkbox" name="checkbox2" value="${selectCheckListAll.workNo}" /></td>
 							<td>${params.currentpageDB=params.currentpageDB+1}</td>
-							<td>
-							<c:choose>
-								<c:when test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
-								<a href="#" data-toggle="modal" data-target="#updateCheckListModal" onclick="updateCheckListModalView(${selectCheckListAll.workNo})" >${selectCheckListAll.workNum}</a>
-								</c:when>
-								<c:otherwise>
-								${selectCheckListAll.workNum}
-								</c:otherwise>
-							</c:choose>
-							</td>
+							<td><a href="#" data-toggle="modal" data-target="#updateCheckListModal" onclick="updateCheckListModalView(${selectCheckListAll.workNo})" >${selectCheckListAll.workNum}</a></td>
 							<td>${selectCheckListAll.workSubject}</td>
 							<td>${selectCheckListAll.startDate} ~ ${selectCheckListAll.endDate}</td>
 							<td>${selectCheckListAll.state}</td>
@@ -155,7 +144,6 @@ function mutiDo(){
 									</c:choose>
 								</c:when>
 								<c:otherwise>
-								<td></td>
 								</c:otherwise>
 							</c:choose>
                 		</tr>
@@ -185,7 +173,8 @@ function mutiDo(){
 			<c:if test="${params.endpage != params.currentpage}">
 				<li class="paginate_button page-item next"><button name="next" class="page-link" onclick="searchWork2(${params.selectPage +1})">다음</button></li>
 			</c:if>
-		<input type="hidden" name="joinId" value=""/>
+		
+		<input type="hidden" name="joinId" value="${joinMemberCheck.userId}"/>
 		<input type="hidden" name="selectPage" value="${params.selectPage}"/>
 		<input type="hidden" name="underPaging" value=""/>
 		<input type="hidden" name="startpage" value="${params.startpage}"/>

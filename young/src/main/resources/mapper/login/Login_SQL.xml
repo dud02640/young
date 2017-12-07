@@ -204,5 +204,10 @@
 		 where userId=#{userId}
 		   and userDeleteYn="N"
 	</select>
-
+	<select id="pwCheck" parameterType="hashmap" resultType="int">
+		select count(*) 
+		  from member
+		 where userId=#{userId}
+		   and userPw=#{userPw}
+	</select>
 </mapper>

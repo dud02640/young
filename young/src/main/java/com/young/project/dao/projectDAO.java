@@ -152,4 +152,14 @@ public class projectDAO extends AbstractDAO{
 		// TODO Auto-generated method stub
 		return selectList("project.userProjectInfo",params);
 	}
+
+	public List<Map<String, Object>> userWorkList(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return selectList("project.userWorkList",params);
+	}
+
+	public int userWorkListCnt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (int) selectOne("project.userWorkListCnt",params);
+	}
 }

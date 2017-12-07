@@ -77,11 +77,13 @@ function userIndivisualView(userId){
 					<span class="nav-link-text">개인</span>
 				</a>
 				</li>
+				<c:if test="${adminYn=='Y'}">
 				<li class="nav-item" >
 					<a class="nav-link" href="/login/memberlist.do"> 
 					<span class="nav-link-text">회원관리</span>
 				</a>
 				</li>
+				</c:if>
 				<li class="nav-item">
 					<a href="#" class="nav-link" onclick="logout();"> 
 					<span class="nav-link-text">로그아웃</span>
@@ -110,7 +112,14 @@ function userIndivisualView(userId){
 										<div class="mr-3">*진행중인 프로젝트</div>
 												<li class="mr-3"> ${indivisualView.projectName}</li>
 										<div class="mr-3">업무량:
-												<div class="mr-3">${indivisualView.workCount}</div>
+										<c:choose>
+										<c:when test="${indivisualView.workCount!=null}">
+												<div class="mr-3">${indivisualView.workCount} 개</div>
+										</c:when>
+										<c:otherwise>
+												<div> 0 개</div>
+										</c:otherwise>
+										</c:choose>
 										</div>
 									</div>
 									<button class="card-footer text-white clearfix small z-1" onclick="userIndivisualView('${indivisualView.userId}')">

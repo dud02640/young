@@ -31,8 +31,6 @@ function go_multicancel(){
  	  		if(retVal){
  	  			frm.action="/project/workMultiCancel.do";
  	  			frm.submit();
- 	  		}else{
- 	  			alert("취소");
  	  		}
 		}else{
  			alert("삭제할 업무를 하나 이상 선택하십시오.");
@@ -46,8 +44,6 @@ function go_multicomplete(){
  	  		if(retVal){
  	  			frm.action="/project/workMultiComplete.do";
  	  			frm.submit();
- 	  		}else{
- 	  			alert("취소");
  	  		}
 		}else{
  			alert("완료할 업무를 하나 이상 선택하십시오.");
@@ -61,8 +57,6 @@ function workCancel(workNo){
  		if(retVal){
  			frm.action="/project/workCancel.do";
  			frm.submit();
- 		}else{
- 			alert("취소");
  		}
 }
 function workComplete(workNo){

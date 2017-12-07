@@ -189,4 +189,16 @@ public class projectImpl implements projectService{
 		// TODO Auto-generated method stub
 		return projectDAO.userProjectInfo(params);
 	}
+
+	@Override
+	public List<Map<String, Object>> userWorkList(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return projectDAO.userWorkList(params);
+	}
+
+	@Override
+	public int userWorkListCnt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return projectDAO.userWorkListCnt(params);
+	}
 }

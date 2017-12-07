@@ -109,4 +109,10 @@ public class loginServiceImpl implements loginService{
 		// TODO Auto-generated method stub
 		return loginDAO.userInfo(params);
 	}
+
+	@Override
+	public int pwCheck(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.pwCheck(params);
+	}
 }

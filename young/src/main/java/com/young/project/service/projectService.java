@@ -63,4 +63,8 @@ public interface projectService {
 
 	List<Map<String, Object>> userProjectInfo(Map<String, Object> params);
 
+	List<Map<String, Object>> userWorkList(Map<String, Object> params);
+
+	int userWorkListCnt(Map<String, Object> params);
+
 }

@@ -44,12 +44,14 @@ $(function(){
 		showOtherMonths:true,
 		selectOtherMonths:true,		
 	});
-	$("#endDate").datepicker({
-		showAnimation:'slide',
-	});
-	$("#startDate").datepicker({
-		showAnimation:'slide',
-	});
+ 	if($('input[name=ckuserId]').val()!=null || $('input[name=leaderYn]').val()=='Y' || $('input[name=adminYn]').val()=='Y'){ 
+		$("#endDate").datepicker({
+			showAnimation:'slide',
+		});
+		$("#startDate").datepicker({
+			showAnimation:'slide',
+		});
+	} 
 
 });
 function medo(workNo){
@@ -66,8 +68,6 @@ function deletecheckListModalId(){
  	  		if(retVal){
  	  			frm.action="/project/deletecheckListModalId.do";
  	  			frm.submit();
- 	  		}else{
- 	  			alert("취소");
  	  		}
 }
 </script>
@@ -113,9 +113,15 @@ function deletecheckListModalId(){
 				</div>
               </div>
             </div>
+            ${joinMemberCheck.userId}
       </div>
+      <c:if test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
       <button type="button" class="btn btn-primary" onclick="updatecheckListModalId()">수정</button>
       <button type="button" class="btn btn-primary" onclick="deletecheckListModalId()">삭제</button>
       <c:if test="${params.adminYn=='N'}">
 	  	<button class="btn btn-primary" type="button" onclick="medo(${updateListModalPage.workNo})">내가하기</button>
 	  </c:if>
+	  </c:if>
+	  <input type="hidden" name="adminYn" value="${params.adminYn}"/>
+	  <input type="hidden" name="leaderYn" value="${joinMemberCheck.leaderYn}"/>
+	  <input type="hidden" name="ckuserId" value="${joinMemberCheck.userId}"/>

@@ -104,8 +104,6 @@ function deleteProject(){
 	  if(retVal){
   			frm.action="/project/deleteProject.do";
   			frm.submit(); 
-	  }else{
-  			alert("취소");
 	  }	
 }
 function refresh(){
@@ -224,8 +222,6 @@ function go_multidel(){
  	  					$("#checkListModalId").append(data);	
  	  					}
  	  			}); 
- 	  		}else{
- 	  			alert("취소");
  	  		}
 		}else{
  			alert("삭제할 회원을 한 명 이상 선택하십시오.");

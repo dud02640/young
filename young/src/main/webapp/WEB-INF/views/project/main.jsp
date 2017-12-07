@@ -60,8 +60,6 @@ function searchMember(pIndex){
 	  			$('#mes').val("삭제 완료");
 	  			frm.action = "/project/projectmultidelete.do";
 				frm.submit();
-	  		}else{
-	  			alert("취소");
 	  		}
 		}else{
 			alert("삭제할 프로젝트를 한 개 이상 선택하십시오.");
@@ -186,7 +184,6 @@ function searchMember(pIndex){
 												${WorkCheckList.persent} %
 											</c:when>
 											</c:choose>
-											
 										</c:forEach>
 										</div>
 										<div class="mr-3">개발기간 : ${list.projectStartDate} ~

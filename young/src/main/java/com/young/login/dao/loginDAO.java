@@ -88,6 +88,11 @@ public class loginDAO extends AbstractDAO{
 		return (Map<String, Object>)selectOne("login.userInfo",params);
 	}
 
+	public int pwCheck(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (int) selectOne("login.pwCheck",params);
+	}
+
 
 
 }

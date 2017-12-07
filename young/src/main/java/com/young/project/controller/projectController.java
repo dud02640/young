@@ -310,7 +310,7 @@ public class projectController {
 		
 		int leaderNum = joinService.leaderNum(params);			//리더의 수
 		int joinNum = joinService.joinNum(params);			//팀원의 수
-		int workNum = projectService.workNum(params);		//팀원의 작업량
+		
 		
 		List<Map<String,Object>> joinlist = loginService.selectJoinList(params);
 		int membercnt= loginService.selectJoinCnt(params);			//member 총인원
@@ -330,7 +330,7 @@ public class projectController {
 		mav.addObject("leaderNum",leaderNum);
 		mav.addObject("joinNum",joinNum);
 		mav.addObject("JoinId",JoinId);
-		mav.addObject("workNum",workNum);
+
 		mav.addObject("joinlist",joinlist);
 		mav.addObject("params",params);
 		mav.setViewName("/project/insertdeleteJoinModal");		
@@ -338,12 +338,16 @@ public class projectController {
 		return mav;
 		//페이징//		
 	}
-	@RequestMapping(value = "/project/test.do")
-	public String test(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model){
 	
-		return "/project/insertdeleteJoinModal";
+	@RequestMapping(value = "/project/workNum.do")
+	@ResponseBody
+	public String workNum(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model){
 	
+		int workNum = projectService.workNum(params);		//팀원의 작업량
+		
+		return Integer.toString(workNum);
 	}
+	
 	@RequestMapping(value ="/project/projectmultidelete.do")
 	public String projectmultidelete(@RequestParam("projectcheckbox")String[] checkbox,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException {
 		
@@ -392,11 +396,15 @@ public class projectController {
 		params.put("userId", session.getAttribute("userId"));
 		params.put("adminYn", session.getAttribute("adminYn"));
 		
+		Map<String,Object> joinMemberCheck= joinService.joinMemberCheck(params);	
 		Map<String,Object> updateListModalPage= projectService.selectupdateListModalPage(params);
 		
+		mav.addObject("joinMemberCheck",joinMemberCheck);
 		mav.addObject("updateListModalPage", updateListModalPage);
 		mav.addObject("params", params);
+		
 		mav.setViewName("/project/updateCheckListModal");
+		
 		return mav;	
 	}
 	
@@ -466,7 +474,7 @@ public class projectController {
 			endpageNo=endpage;
 		}
 		Map<String,Object> joinMemberCheck= joinService.joinMemberCheck(params);	
-		
+
 		params.put("currentpage", currentpage);
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);

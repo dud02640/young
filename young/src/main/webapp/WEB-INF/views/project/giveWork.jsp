@@ -23,15 +23,13 @@ function searchMember3(pIndex){
 }
 /* 페이징 */
 function giveWorkMulti(userId){
-	$('#mes').val("업무 주기 완료");
+	$('#mes').val("업무 부여 완료");
 	$('#JoinId').val(userId);
 	var frm =document.getElementById('projectDetailForm');
  	  		var retVal = confirm("정말로 하시겠습니까?");
  	  		if(retVal){
  	  			frm.action="/project/giveWorkMulti.do";
  	  			frm.submit();
- 	  		}else{
- 	  			alert("취소");
  	  		}
 }
 </script>

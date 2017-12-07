@@ -71,6 +71,7 @@ $(function(){
 		showOtherMonths:true,
 		selectOtherMonths:true,		
 	});
+	
 	$("#endDate").datepicker({
 		showAnimation:'slide',
 	});

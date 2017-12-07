@@ -169,10 +169,7 @@
   			$('#mes').val("삭제 완료");
   			frm.action="/login/deletemember.do";
   		  	frm.submit();
-  		}else{
-  			alert("취소");
   		}
-  		
   	}
   </script>
 </head>

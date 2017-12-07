@@ -24,27 +24,30 @@ function insertjoin(userId,userName){
 	}); 
 }
 
-function deletejoin(userId,userName,joinNum,workNum,leaderNum,projectNo){
-	$('input[name=projectNo]').val(projectNo);
+function deletejoin(userId,userName,workNum,leaderNum,leaderYn,projectNo){
 	$('#mes').val("삭제 완료");
 	$('input[name=joinId]').val(userId);
+	$('input[name=projectNo]').val(projectNo);
 	$('input[name=userName]').val(userName);
 	var frm =$("#projectDetailForm").serialize();/* document.getElementById('projectDetailForm'); */
-		if(leaderNum>1){
-			if(joinNum>1){
-				 	$.ajax({
+		if(leaderNum>1||leaderYn!='Y'){
+				
+					$.ajax({
 						type:"POST",
-						url:"/join/deleteJoin.do",
+						url:"/project/workNum.do",
 						data: frm,
 						success: function(data){
 							/* location.reload(); */
-								$("#optionModalInsertMemberId").empty();
-								$("#optionModalInsertMemberId").append(data);
-						}
-					});
-				}else{
-					alert("팀원은 한명이상 있어야 합니다.");
-				}
+								if(data=='0'){
+									$.post("/join/deleteJoin.do",frm,function(data){
+										$("#optionModalInsertMemberId").empty();
+										$("#optionModalInsertMemberId").append(data);
+									});
+								}else{
+									alert(userName+"의 진행중인 업무가 존재합니다.");
+								}
+							}
+						});
 			}else{
 				alert("팀장은 한명이상 있어야 합니다.");
 			}
@@ -87,7 +90,6 @@ function selectNReader(userId,userName,leaderNum){
 			alert("팀장은 한명이상 있어야 합니다.");
 		}
 }
-
 </script>
 <!--  -->
           <div class="form-group">
@@ -120,7 +122,7 @@ function selectNReader(userId,userName,leaderNum){
 								<td><button class="btn btn-default" type="button">삭제</button></td>
 							</c:when> --%>
 							<c:when test="${list.loginUserId eq list.joinUserId && list.joinProjectNo eq params.projectNo}">
-								<td><button class="btn btn-primary" type="button" onclick="deletejoin('${list.loginUserId}','${list.loginUserName}','${joinNum}','${workNum}','${leaderNum}','${params.projectNo}')">삭제</button></td>
+								<td><button class="btn btn-primary" type="button" onclick="deletejoin('${list.loginUserId}','${list.loginUserName}','${workNum}','${leaderNum}','${list.leaderYn}','${list.joinProjectNo}')">삭제</button></td>
 							</c:when>
 							<c:otherwise>
 								<td><button class="btn btn-primary" type="button" onclick="insertjoin('${list.loginUserId}','${list.loginUserName}');">추가</button></td>
@@ -131,7 +133,7 @@ function selectNReader(userId,userName,leaderNum){
 									<td><button class="btn btn-default" type="button">팀장</button></td>
 								</c:when> --%>
 								<c:when test="${list.leaderYn eq 'Y' }">
-								<td><button class="btn btn-danger" type="button" onclick="selectNReader('${list.loginUserId}','${list.loginUserName}','${leaderNum}')">*팀장</td>								
+								<td><button class="btn btn-danger" type="button" onclick="selectNReader('${list.loginUserId}','${list.loginUserName}','${leaderNum}','${list.leaderYn}')">*팀장</td>								
 								</c:when>
 								<c:when test="${list.leaderYn eq 'N'}">
 								<td><button class="btn btn-success" type="button" onclick="selectYReader('${list.loginUserId}','${list.loginUserName}')">팀원</td>
@@ -170,6 +172,7 @@ function selectNReader(userId,userName,leaderNum){
 			</c:if>
 		<input type="hidden" name="joinId" value=""/>
 		<input type="hidden" name="userName" value=""/>
+		<input type="hidden" id="projectNo" name="projectNo" value=""/>
 		<input type="hidden" name="selectPage" value="${params.selectPage}"/>
 		<input type="hidden" name="underPaging" value=""/>
 		<input type="hidden" name="startpage" value="${params.startpage}"/>

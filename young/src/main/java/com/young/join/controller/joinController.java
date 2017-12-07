@@ -57,7 +57,7 @@ public class joinController {
 	@RequestMapping(value = "/join/deleteJoin.do")
 	public String deletemember(HttpServletRequest req,@RequestParam Map<String,Object> params,HttpServletResponse response) throws IOException{
 /*		String projectNo=URLEncoder.encode(params.get("projectNo").toString());*/
-
+		System.out.println("@@@@@@@"+params);
 		joinService.deleteJoin(params);	
 		
 		String userName=(String) params.get("userName");

@@ -38,4 +38,6 @@ public interface loginService {
 
 	Map<String, Object> userInfo(Map<String, Object> params);
 
+	int pwCheck(Map<String, Object> params);
+
 }

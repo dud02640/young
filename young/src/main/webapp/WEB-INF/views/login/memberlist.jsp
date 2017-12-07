@@ -39,8 +39,6 @@ $(function(){
 	  			$('#mes').val("삭제 완료");
 	  			frm.action = "/login/multidelete.do";
 				frm.submit();
-	  		}else{
-	  			alert("취소");
 	  		}
 		}else{
 			alert("삭제할 회원을 한 명 이상 선택하십시오.");
