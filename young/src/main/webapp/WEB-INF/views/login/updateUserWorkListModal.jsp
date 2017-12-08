@@ -2,10 +2,10 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script>
-function completeWorkList(){
+function completeUserWorkList(){
 	
 	$('#mes').val("업무 완료");
-	var frm = document.getElementById('projectDetailForm');/* document.getElementById('projectDetailForm'); */
+	var frm = document.getElementById('userindivisualForm');/* document.getElementById('projectDetailForm'); */
 
  		if(parseInt($("#startDate").val())>parseInt($("#endDate").val())){
 				alert("시작일과 종료일을 확인하세요.");
@@ -26,13 +26,14 @@ function completeWorkList(){
 					alert("종료일을 입력하시오");
 					$('input[name=endDate]').focus();
 			}else{	 
-				frm.action="/project/completeWorkList.do";
+				frm.action="/project/completeUserWorkList.do";
 				frm.submit();
 			}
 }
-function updateWorkListModalId(){
+function updateWorkListModalId(userId){
 	$('#mes').val("업무 수정 성공");
-	var frm = document.getElementById('projectDetailForm');/* document.getElementById('projectDetailForm'); */
+	$('#userId').val(userId);
+	var frm = document.getElementById('userindivisualForm');/* document.getElementById('projectDetailForm'); */
 
  		if(parseInt($("#startDate").val())>parseInt($("#endDate").val())){
 				alert("시작일과 종료일을 확인하세요.");
@@ -52,8 +53,8 @@ function updateWorkListModalId(){
 			}else if($('input[name=endDate]').val().trim()==""){
 					alert("종료일을 입력하시오");
 					$('input[name=endDate]').focus();
-			}else{	 
-				frm.action="/project/updateCheckList.do";
+			}else{	
+				frm.action="/project/updateUserCheckList.do";
 				frm.submit();
 			}
  }
@@ -81,6 +82,11 @@ $(function(){
  		});	
 	} 
 });
+function goProject(){
+	var frm = document.getElementById('userindivisualForm');
+	frm.action="/project/projectDetailView.do";
+	frm.submit();
+}
 /* function openMemo(){
 	var div = document.createElement('div');
 	div.innerHTML=document.getElementById('memoDiv').innerHTML;
@@ -90,7 +96,15 @@ function removeMemo(obj){
 	document.getElementById('memofield').removeChild(obj);
 } */
 </script>
-<!--  -->       
+<!--  -->   
+
+          <div class="form-group">
+            <div class="form-row">
+              <div class="col-md-6">
+                <label>프로젝트명 : ${params.projectName}</label>
+               </div>
+              </div>
+          </div>
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
@@ -147,14 +161,15 @@ function removeMemo(obj){
             </div> -->
       </div>
       <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
-      	<button type="button" class="btn btn-primary" onclick="updateWorkListModalId()">수정</button>
+      	<button type="button" class="btn btn-primary" onclick="updateWorkListModalId('${params.userId}')">수정</button>
       </c:if>
 <!--       <button type="button" class="btn btn-primary" onclick="openMemo()">메모작성</button> -->
       <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
         <button type="button" class="btn btn-primary" onclick="workCancel(${updateWorkListModalView.workNo})">취소하기</button>
-      	<button type="button" class="btn btn-primary" onclick="completeWorkList()">완료하기</button>
+      	<button type="button" class="btn btn-primary" onclick="completeUserWorkList('${params.userId}')">완료하기</button>
+      	<button type="button" class="btn btn-primary" onclick="goProject('${params.projectNo}')">해당프로젝트로</button>
 	  </c:if>
 	  <input type="hidden" name="adminYn" value="${params.adminYn}"/>
 	  <input type="hidden" name="leaderYn" value="${joinMemberCheck.leaderYn}"/>
 	  <input type="hidden" name="ckuserId" value="${joinMemberCheck.userId}"/>
-	  <input type="hidden" name="userId" value="${params.userId}"/>
+	  <input type="hidden" id="userId" name="userId" value="${params.userId}"/>

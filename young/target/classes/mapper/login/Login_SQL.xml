@@ -201,13 +201,59 @@
 	</select>
 	<select id="userInfo" parameterType="hashmap" resultType="hashmap">
 		select * from member
-		 where userId=#{userId}
+		 where userId=#{gibonId}
 		   and userDeleteYn="N"
 	</select>
 	<select id="pwCheck" parameterType="hashmap" resultType="int">
 		select count(*) 
 		  from member
-		 where userId=#{userId}
+		 where userId=#{gibonId}
 		   and userPw=#{userPw}
+	</select>
+	<select id="userHistory" parameterType="hashmap" resultType="hashmap">
+		select w.projectNo as projectNo,
+			   p.projectName as projectName,
+			   w.workNo as workNo,
+			   w.workNum as workNum,
+			   w.workSubject as workSubject,
+			   concat(substring(w.startDate,1,4),".",substring(w.startDate,5,2),".",substring(w.startDate,7,2)) as startDate,
+			   concat(substring(w.endDate,1,4),".",substring(w.endDate,5,2),".",substring(w.endDate,7,2)) as endDate,
+			   w.state as state,
+			   w.memo as memo,
+               m.userName as userName,
+               m.userId as userId,
+               w.updateDate as updateDate
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		  left outer join project p
+			on p.projectNo=w.projectNo
+		 where m.userId=#{userId}
+		   and w.state="진행완료"
+           and p.projectDeleteYn="N"
+         <if test="searchkeyword != null or searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword},'%')</when>
+			 </choose>
+		 </if>
+		 limit #{currentpageDB},#{paging}
+	</select>
+	<select id="userHistoryCnt" parameterType="hashmap" resultType="int">
+		select count(*)
+		  from workchecklist w
+    	  left outer join member m
+            on w.userId=m.userId
+		  left outer join project p
+			on p.projectNo=w.projectNo
+		 where m.userId=#{userId}
+		   and w.state="진행완료"
+           and p.projectDeleteYn="N"
+		  <if test="searchkeyword != null or searchkeyword != '' "> 
+			 <choose>
+			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword},'%')</when>
+			 </choose>
+		 </if>
 	</select>
 </mapper>

@@ -40,4 +40,8 @@ public interface loginService {
 
 	int pwCheck(Map<String, Object> params);
 
+	List<Map<String, Object>> userHistory(Map<String, Object> params);
+
+	int userHistoryCnt(Map<String, Object> params);
+
 }

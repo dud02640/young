@@ -15,6 +15,7 @@ function searchWork2(pIndex){
 		data: frm,
 		success: function(data){
 			/* location.reload(); */
+
 			$("#checklist").empty();
 			$("#checklist").append(data);	
 		}
@@ -112,6 +113,7 @@ function mutiDo(){
                 			<th>업무명</th>
                 			<th>기간</th>
                 			<th>진행상태</th>
+                			<th>작성자</th>
                 			<c:choose>
                 			<c:when test="${params.adminYn=='Y' || joinMemberCheck.userId==null}"><!-- 관리자가 보이게끔 설정해놓음 나중에 사용자한테는 Y로 해서 사용자가 보이도록  -->
 							</c:when>
@@ -130,6 +132,7 @@ function mutiDo(){
 							<td>${selectCheckListAll.workSubject}</td>
 							<td>${selectCheckListAll.startDate} ~ ${selectCheckListAll.endDate}</td>
 							<td>${selectCheckListAll.state}</td>
+							<td>${selectCheckListAll.updateUserName}</td>
 							<c:choose>
 								<c:when test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
 									<c:choose>

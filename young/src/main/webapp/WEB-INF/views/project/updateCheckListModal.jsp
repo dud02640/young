@@ -44,14 +44,17 @@ $(function(){
 		showOtherMonths:true,
 		selectOtherMonths:true,		
 	});
- 	if($('input[name=ckuserId]').val()!=null || $('input[name=leaderYn]').val()=='Y' || $('input[name=adminYn]').val()=='Y'){ 
+ 	if($('input[name=ckuserId]').val()!="" || $('input[name=leaderYn]').val()=='Y' || $('input[name=adminYn]').val()=='Y'){ 
 		$("#endDate").datepicker({
 			showAnimation:'slide',
 		});
 		$("#startDate").datepicker({
 			showAnimation:'slide',
 		});
+
+		
 	} 
+	
 
 });
 function medo(workNo){
@@ -71,7 +74,8 @@ function deletecheckListModalId(){
  	  		}
 }
 </script>
-<!--  -->       
+<!--  -->   
+<div class="checkListClass"> 
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
@@ -113,7 +117,6 @@ function deletecheckListModalId(){
 				</div>
               </div>
             </div>
-            ${joinMemberCheck.userId}
       </div>
       <c:if test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
       <button type="button" class="btn btn-primary" onclick="updatecheckListModalId()">수정</button>
@@ -122,6 +125,7 @@ function deletecheckListModalId(){
 	  	<button class="btn btn-primary" type="button" onclick="medo(${updateListModalPage.workNo})">내가하기</button>
 	  </c:if>
 	  </c:if>
+</div>   
 	  <input type="hidden" name="adminYn" value="${params.adminYn}"/>
 	  <input type="hidden" name="leaderYn" value="${joinMemberCheck.leaderYn}"/>
 	  <input type="hidden" name="ckuserId" value="${joinMemberCheck.userId}"/>

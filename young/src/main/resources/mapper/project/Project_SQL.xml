@@ -298,8 +298,14 @@
 			   concat(substring(startDate,1,4),".",substring(startDate,5,2),".",substring(startDate,7,2)) as startDate,
 			   concat(substring(endDate,1,4),".",substring(endDate,5,2),".",substring(endDate,7,2)) as endDate,
 			   memo,
-			   state
-		  from workchecklist
+			   state,
+               (select userName from member 
+               where userId=w.createUserId) as createUserName,
+               (select userName from member 
+               where userId=w.updateUserId) as updateUserName
+		  from workchecklist w
+          left outer join member m
+            on w.userId=m.userId
 		 where projectNo=#{projectNo}
 		   and (state="신규" or state="진행완료")
 		  <if test="searchkeyword2 != null or searchkeyword2 != '' "> 
@@ -410,12 +416,13 @@
 		  left outer join joinm j
 		    on p.projectNo=j.projectNo
 		 where p.projectDeleteYn="N"
-		   and userId=#{userId}
+		   and userId=#{gibonId}
 		   and p.projectState!="bg-success"
 	</select>
 	
 	<select id="userWorkList" parameterType="hashmap" resultType="hashmap">
 			select w.projectNo as projectNo,
+			   p.projectName as projectName,
 			   w.workNo as workNo,
 			   w.workNum as workNum,
 			   w.workSubject as workSubject,

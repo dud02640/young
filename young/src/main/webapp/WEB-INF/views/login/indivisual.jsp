@@ -27,8 +27,8 @@ function logout() {
 	frm.action = "/login/logout.do";
 	frm.submit();
 }
-function userIndivisualView(userId){
-	$("#userId").val(userId);
+function userIndivisualView(gibonId){
+	$("#gibonId").val(gibonId);
 	var frm = document.getElementById('mainForm');
 	frm.action = "/login/userIndivisualView.do";
 	frm.submit();
@@ -163,7 +163,7 @@ function userIndivisualView(userId){
 			</div>
 			</div>
 			<input type="hidden" id="mes" name="mes" >
-			<input type="hidden" id="userId" name="userId" />
+			<input type="hidden" id="gibonId" name="gibonId" />
 		<input type="hidden" name="projectNo" value=""/>
 	</form>
 </body>

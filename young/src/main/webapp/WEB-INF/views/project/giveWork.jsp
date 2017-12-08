@@ -22,11 +22,11 @@ function searchMember3(pIndex){
 	}); 	
 }
 /* 페이징 */
-function giveWorkMulti(userId){
+function giveWorkMulti(userId,userName){
 	$('#mes').val("업무 부여 완료");
 	$('#JoinId').val(userId);
 	var frm =document.getElementById('projectDetailForm');
- 	  		var retVal = confirm("정말로 하시겠습니까?");
+ 	  		var retVal = confirm(userName + "에게 업무부여를 하시겠습니까?");
  	  		if(retVal){
  	  			frm.action="/project/giveWorkMulti.do";
  	  			frm.submit();
@@ -58,7 +58,7 @@ function giveWorkMulti(userId){
                 		<tr>
 							<td>${list.loginUserName}</td>
 							<td>${list.loginUserId}</td>
-							<td><button class="btn btn-primary" onclick="giveWorkMulti('${list.loginUserId}')">업무부여</button></td>
+							<td><button class="btn btn-primary" onclick="giveWorkMulti('${list.loginUserId}','${list.loginUserName}')">업무부여</button></td>
                 		</tr>
                 	</c:forEach>
              		</tbody>

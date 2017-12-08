@@ -124,6 +124,12 @@ function updateCheckListModalView(workNo){
  		success: function(data){
  		 	$("#updateCheckListModalId").empty();
  		 	$("#updateCheckListModalId").append(data);
+
+ 		 	if(($('input[name=ckuserId]').val()==null || $('input[name=ckuserId]').val()=="") && $('input[name=adminYn]').val()=="N"){
+ 		 		$("#updateCheckListModalId input").attr("readonly",true);
+ 		 		$("#updateCheckListModalId textarea").attr("readonly",true);
+ 		 	}
+ 		 	
  		},	
  	});
  }
@@ -139,6 +145,11 @@ function updateWorkListModalView(workNo){
  		success: function(data){
  		 	$("#updateWorkListModalId").empty();
  		 	$("#updateWorkListModalId").append(data);
+
+ 		 	if(($('input[name=ckuserId]').val()==null || $('input[name=ckuserId]').val()=="") && $('input[name=adminYn]').val()=="N" ){
+ 		 		$("#updateWorkListModalId input").attr("readonly",true);
+ 		 		$("#updateWorkListModalId textarea").attr("readonly",true);
+ 		 	}
  		},	
  	});
 }
@@ -310,6 +321,7 @@ function go_multidel(){
 						<div class="row">
 						<div class="col-sm-12 col-md-7">
 						<input type="hidden" name="projectNo" value="${projectdetail.projectNo}"/>
+						<input type="hidden" name="ckuserId" value="${joinMemberCheck.userId}"/>
 					</div>
 				</div>
 			</div>	
@@ -317,7 +329,7 @@ function go_multidel(){
 	<div class="card mb-3">
 		<div class="card-body bg-faded">
 			<div class="row" >체크 리스트
-			<c:if test="${ joinMemberCheck.leaderYn=='Y' || params.adminYn=='Y'}">
+			<c:if test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y' || params.adminYn=='Y'}">
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createcheckListModal" onclick="createcheckListModalIdPage()">추가</button>
 			</c:if>
 			</div>

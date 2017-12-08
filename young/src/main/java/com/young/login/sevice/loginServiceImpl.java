@@ -115,4 +115,16 @@ public class loginServiceImpl implements loginService{
 		// TODO Auto-generated method stub
 		return loginDAO.pwCheck(params);
 	}
+
+	@Override
+	public List<Map<String, Object>> userHistory(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.userHistory(params);
+	}
+
+	@Override
+	public int userHistoryCnt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.userHistoryCnt(params);
+	}
 }

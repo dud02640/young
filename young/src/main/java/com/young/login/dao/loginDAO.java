@@ -93,6 +93,14 @@ public class loginDAO extends AbstractDAO{
 		return (int) selectOne("login.pwCheck",params);
 	}
 
+	public List<Map<String, Object>> userHistory(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return selectList("login.userHistory",params);
+	}
 
+	public int userHistoryCnt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (int) selectOne("login.userHistoryCnt",params);
+	}
 
 }

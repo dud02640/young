@@ -64,9 +64,11 @@ function workComplete(workNo){
 	$('#workNo').val(workNo);
 	
 	var frm=document.getElementById('projectDetailForm');
- 	frm.action="/project/workComplete.do";
- 	frm.submit();
-
+	var retVal = confirm("완료 하시겠습니까?");
+		if(retVal){
+		 	frm.action="/project/workComplete.do";
+		 	frm.submit();
+ 		}
 }
 
 
@@ -121,16 +123,7 @@ function updateWorkList(workNo){
 						</c:otherwise>
 					</c:choose>
 					<td>${params.currentpageDB=params.currentpageDB+1}</td>
-					<td>
-					<c:choose>
-						<c:when test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
-							<a href="#" data-toggle="modal" data-target="#updateWorkListModal" onclick="updateWorkListModalView(${selectWorkListAll.workNo})">${selectWorkListAll.workNum}</a>
-						</c:when>
-						<c:otherwise>
-							${selectWorkListAll.workNum}
-						</c:otherwise>
-					</c:choose>
-					</td>
+					<td><a href="#" data-toggle="modal" data-target="#updateWorkListModal" onclick="updateWorkListModalView(${selectWorkListAll.workNo})">${selectWorkListAll.workNum}</a></td>
 					<td>${selectWorkListAll.workSubject}</td>
 					<td>${selectWorkListAll.startDate} ~ ${selectWorkListAll.endDate}</td>
 					<td>${selectWorkListAll.userName}</td>
@@ -152,9 +145,11 @@ function updateWorkList(workNo){
 					</c:otherwise>
 					</c:choose>
 					</c:when>
-					<c:otherwise>
+					<c:when test="${selectWorkListAll.userId==params.userId || joinMemberCheck.leaderYn=='N'|| params.adminYn=='Y'}">
 					<td>취소하기</td>
 					<td>완료하기</td>
+					</c:when>
+					<c:otherwise>
 					</c:otherwise>
 					</c:choose>
 			</tr>

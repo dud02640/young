@@ -423,6 +423,23 @@ public class projectController {
 		return mav;	
 	}
 	
+	@RequestMapping(value ="/project/updateUserWorkListModalView.do")
+	public ModelAndView updateUserWorkListModalView(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) {
+		System.out.println("@@@@"+params);
+		ModelAndView mav = new ModelAndView();
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		params.put("adminYn", session.getAttribute("adminYn"));
+		
+		Map<String,Object> updateWorkListModalView= projectService.updateWorkListModalView(params);
+		
+		mav.addObject("params", params);
+		mav.addObject("updateWorkListModalView", updateWorkListModalView);
+		mav.setViewName("/login/updateUserWorkListModal");
+		return mav;	
+	}
+	
+		
 	@RequestMapping(value ="/project/checkListPage.do")
 	public ModelAndView checkListPage(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model) {
 		
@@ -588,6 +605,23 @@ public class projectController {
 		return "forward:/project/projectDetailView.do";	
 	}
 	
+	@RequestMapping(value ="/project/updateUserCheckList.do")
+	public String updateUserCheckList(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+
+		HttpSession session = req.getSession();
+		params.put("userId1", session.getAttribute("userId1"));
+		
+		projectService.updateCheckList(params);
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/login/userIndivisualView.do";	
+	}
+	
 	@RequestMapping(value ="/project/completeWorkList.do")
 	public String completeWorkList(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
 		
@@ -603,6 +637,23 @@ public class projectController {
 		out.flush();
 		
 		return "forward:/project/projectDetailView.do";	
+	}
+	
+	@RequestMapping(value ="/project/completeUserWorkList.do")
+	public String completeUserWorkList(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+		
+		HttpSession session = req.getSession();
+		params.put("userId1", session.getAttribute("userId1"));
+		
+		projectService.updateCompleteWorkList(params);
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/login/userIndivisualView.do";	
 	}
 	
 	
@@ -751,6 +802,26 @@ public class projectController {
 		return "forward:/project/projectDetailView.do";	
 	}
 	
+	@RequestMapping(value ="/project/userWorkMultiCancel.do")
+	public String userWorkMultiCancel(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
+		
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		
+		for(String chk : checkbox) {
+			params.put("workNo", chk);
+			projectService.workCancel(params);
+		}
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/login/userIndivisualView.do";	
+	}
+	
 	@RequestMapping(value ="/project/workMultiComplete.do")
 	public String workMultiComplete(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
 		
@@ -758,7 +829,9 @@ public class projectController {
 		params.put("userId", session.getAttribute("userId"));
 		
 		for(String chk : checkbox) {
-			params.put("workNo", chk);
+			String workProjectNo[]= chk.split(",");
+			params.put("workNo", workProjectNo[0]);
+			params.put("projectNo", workProjectNo[1]);
 			projectService.updateCompleteWorkList(params);
 		}
 
@@ -771,6 +844,28 @@ public class projectController {
 		return "forward:/project/projectDetailView.do";	
 	}
 
+	@RequestMapping(value ="/project/userWorkMultiComplete.do")
+	public String userWorkMultiComplete(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
+
+		HttpSession session = req.getSession();
+		params.put("userId", session.getAttribute("userId"));
+		
+		for(String chk : checkbox) {
+			String workProjectNo[]= chk.split(",");
+			params.put("workNo", workProjectNo[0]);
+			params.put("projectNo", workProjectNo[1]);
+			projectService.updateCompleteWorkList(params);
+		}
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/login/userIndivisualView.do";	
+	}
+	
 	@RequestMapping(value ="/project/giveWorkMulti.do")
 	public String giveWorkMulti(@RequestParam("checkbox2")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
 	
