@@ -26,8 +26,11 @@ function completeUserWorkList(){
 					alert("종료일을 입력하시오");
 					$('input[name=endDate]').focus();
 			}else{	 
-				frm.action="/project/completeUserWorkList.do";
-				frm.submit();
+				var retVal = confirm("정말로 완료 하시겠습니까?");
+		 		if(retVal){
+					frm.action="/project/completeUserWorkList.do";
+					frm.submit();
+		 		}
 			}
 }
 function updateWorkListModalId(userId){
@@ -73,7 +76,7 @@ $(function(){
 		selectOtherMonths:true,		
 	});
 	
- 	if($('input[name=ckuserId]').val()!="" || $('input[name=leaderYn]').val()=='Y' || $('input[name=adminYn]').val()=='Y' ){ 
+ 	if($('input[name=gibonId]').val()==$('input[name=userId]').val() || $('input[name=adminYn]').val()=='Y' ){ 
  		$("#endDate").datepicker({
  			showAnimation:'slide',
  		});
@@ -160,16 +163,19 @@ function removeMemo(obj){
             <div id="memofield">
             </div> -->
       </div>
+      <div id="btn">
       <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
       	<button type="button" class="btn btn-primary" onclick="updateWorkListModalId('${params.userId}')">수정</button>
       </c:if>
 <!--       <button type="button" class="btn btn-primary" onclick="openMemo()">메모작성</button> -->
+
       <c:if test="${updateWorkListModalView.userId==params.userId || params.adminYn=='Y'}">
-        <button type="button" class="btn btn-primary" onclick="workCancel(${updateWorkListModalView.workNo})">취소하기</button>
+        <button type="button" class="btn btn-primary" onclick="workCancel(${updateWorkListModalView.workNo},${updateWorkListModalView.projectNo})">취소하기</button>
       	<button type="button" class="btn btn-primary" onclick="completeUserWorkList('${params.userId}')">완료하기</button>
       	<button type="button" class="btn btn-primary" onclick="goProject('${params.projectNo}')">해당프로젝트로</button>
 	  </c:if>
+	  </div>
+	  <div id="historybtn"><button type="button" class="btn btn-default" data-toggle="modal" data-target="#userHistory" data-dismiss="modal">뒤로</button></div>
 	  <input type="hidden" name="adminYn" value="${params.adminYn}"/>
-	  <input type="hidden" name="leaderYn" value="${joinMemberCheck.leaderYn}"/>
-	  <input type="hidden" name="ckuserId" value="${joinMemberCheck.userId}"/>
+	  <input type="hidden" name="ckuserId" value="${selectMemberinfo.userId}"/>
 	  <input type="hidden" id="userId" name="userId" value="${params.userId}"/>

@@ -444,6 +444,7 @@
 			 <choose>
 			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword1},'%')</when>
 			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword1},'%')</when>
+			 	<when test="searchOption1==3">and projectName like concat('%',#{searchkeyword1},'%')</when>
 			 </choose>
 		 </if>
 		 limit #{currentpageDB},#{paging}

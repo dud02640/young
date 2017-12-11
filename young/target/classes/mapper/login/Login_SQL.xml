@@ -228,13 +228,14 @@
             on w.userId=m.userId
 		  left outer join project p
 			on p.projectNo=w.projectNo
-		 where m.userId=#{userId}
+		 where m.userId=#{gibonId}
 		   and w.state="진행완료"
            and p.projectDeleteYn="N"
          <if test="searchkeyword != null or searchkeyword != '' "> 
 			 <choose>
 			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword},'%')</when>
 			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">and projectName like concat('%',#{searchkeyword},'%')</when>
 			 </choose>
 		 </if>
 		 limit #{currentpageDB},#{paging}
@@ -246,7 +247,7 @@
             on w.userId=m.userId
 		  left outer join project p
 			on p.projectNo=w.projectNo
-		 where m.userId=#{userId}
+		 where m.userId=#{gibonId}
 		   and w.state="진행완료"
            and p.projectDeleteYn="N"
 		  <if test="searchkeyword != null or searchkeyword != '' "> 

@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>프로젝트 상세 화면</title>
+<title>개인 화면</title>
 <%@ include file="/WEB-INF/views/include/design.jsp"%>
 <!-- <base target="_self" />   -->
 <script>
@@ -194,7 +194,7 @@ function checkPhone(){
 }
 	function go_delete(){
 		var frm = document.getElementById('userindivisualForm');
-		var retVal = confirm($('input[name=gibonId]').val()+"님을 삭제 하시겠습니까?");
+		var retVal = confirm($('input[name=gibonId]').val()+"님 탈퇴 하시겠습니까?");
 		if(retVal==true){
 			$('#mes').val("삭제 완료");
 			frm.action="/login/deletemember.do";
@@ -208,6 +208,26 @@ function checkPhone(){
 	  		$.ajax({
 	  			type:"POST",
 	  			url:"/login/pwCheck.do",
+	  			data: {"userPw":$('input[name=pwcheck]').val().trim(),"gibonId":$('input[name=userId]').val()},
+	  			success: function(data){
+	  				if(data>=1){
+						$("#pwCheck").modal("hide");
+						$("#updateUserInfo").modal("show");	
+	  				}else{
+	  					alert("비밀번호가 틀렷습니다.");
+	  				}
+	  			},
+	  		});
+		}
+	}
+	
+	function deletePwCheck(){
+		if($('input[name=deletePwCheck]').val().trim()==""){
+			alert("비밀번호를 입력하시오.");
+		}else{
+	  		$.ajax({
+	  			type:"POST",
+	  			url:"/login/deletePwCheck.do",
 	  			data: {"userPw":$('input[name=pwcheck]').val().trim(),"userId":$('input[name=userId]').val()},
 	  			success: function(data){
 	  				if(data>=1){
@@ -220,6 +240,7 @@ function checkPhone(){
 	  		});
 		}
 	}
+	
  	function userHistory(){
 		var frm =$("#userindivisualForm").serialize();
 	  		$.ajax({
@@ -232,7 +253,7 @@ function checkPhone(){
 	  			},
 	  		});
 	} 
-	
+
 </script>
 </head>
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -279,8 +300,7 @@ function checkPhone(){
 						test="${params.adminYn=='Y' || params.userId eq userInfo.userId }">
 						<!-- 관리자인지 아닌지 자기자신인지 아닌지 -->
 						<li>
-							<button type="button" class="btn btn-primary" data-toggle="modal"
-								data-target="#optionModal">설정</button>
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#optionModal">설정</button>
 						</li>
 					</c:if>
 				</ol>
@@ -328,7 +348,7 @@ function checkPhone(){
 		</div>
 		<input type="hidden" name="userId" id="userId" value="${userInfo.userId}" />
 
-		<!-- porjectModal -->
+		<!-- optionModal -->
 		<div class="modal fade" id="optionModal">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -343,14 +363,13 @@ function checkPhone(){
 					<c:choose>
 					<c:when test="${params.adminYn=='Y'}">
 						<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#updateUserInfo"  data-dismiss="modal">정보 수정하기</button>
+<!-- 						<button tpye="button" class="btn btn-primary btn-block" onclick="go_delete()">회원 탈퇴</button> -->
 					</c:when>
 					<c:otherwise>
 						<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#pwCheck"  data-dismiss="modal">정보 수정하기</button>
+						<!-- <button tpye="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#deletePwCheck" data-dismiss="modal">회원 탈퇴</button> -->
 					</c:otherwise>	
 					</c:choose>
-						<button tpye="button" class="btn btn-primary btn-block"
-							data-toggle="modal" data-target="" onclick=""
-							data-dismiss="modal">회원 탈퇴</button>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal"
@@ -359,9 +378,9 @@ function checkPhone(){
 				</div>
 			</div>
 		</div>
-		<!-- porjectModal -->
+		<!-- optionModal -->
 
-		<!-- porjectModal -->
+		<!-- pwCheckModal -->
 		<div class="modal fade" id="pwCheck">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -377,7 +396,7 @@ function checkPhone(){
 							<div class="col-md-6">
 								<label>*비밀번호 입력</label>
 								<div class="input-group-btn">
-									<input class="form-control" type="text" name="pwcheck" />
+									<input class="form-control" type="password" name="pwcheck" />
 								</div>
 							</div>
 						</div>
@@ -393,9 +412,43 @@ function checkPhone(){
 				</div>
 			</div>
 		</div>
-		<!-- porjectModal -->
+		<!-- pwChecktModal -->
+		
+		<!-- pwCheckModal -->
+		<div class="modal fade" id="deletePwCheck">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">비밀번호 확인</h4>
+						<button type="button" class="close" data-dismiss="modal"
+							onclick="refresh('${userInfo.userId}')">
+							<span>x</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-row">
+							<div class="col-md-6">
+								<label>*비밀번호 입력</label>
+								<div class="input-group-btn">
+									<input class="form-control" type="text" name="deletePwCheck" />
+								</div>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="btn-group">
+								<button type="button" class="btn btn-primary" onclick="deletePwCheck()">확인</button>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#optionModal">뒤로</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- pwChecktModal -->
 
-		<!-- porjectModal -->
+		<!-- updateUserInfoModal -->
 		<div class="modal fade" id="updateUserInfo">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -483,12 +536,7 @@ function checkPhone(){
 								<div class="btn-group">
 									<button name="updateMember" id="insertMember"
 										class="btn btn-primary " onclick="go_update()">수정</button>
-									<c:if test="${memberinfo.adminYn=='N'}">
-										<button name="deleteMember" id="deleteMember"
-											class="btn btn-primary " onclick="go_delete()">삭제</button>
-									</c:if>
-									<a href="/login/memberlist.do" class="btn btn-primary"> 뒤로
-									</a>
+										<button name="deleteMember" id="deleteMember" class="btn btn-primary " onclick="go_delete()">탈퇴</button>
 								</div>
 							</div>
 							<div class="modal-footer">
@@ -500,16 +548,12 @@ function checkPhone(){
 					</div>
 				</div>
 			</div>
-			<!-- porjectModal -->
-			
-
-			
-			
+			<!-- updateUserInfoModal -->	
 		</div>
 		
 		
 		
-				<!-- userHistory -->
+		<!-- userHistory -->
 		<div class="modal fade" id="userHistory">
 		  <div class="modal-dialog modal-lg" >
 		    <div class="modal-content">

@@ -111,17 +111,8 @@ function updateWorkList(workNo){
 		<tbody>
 			<c:forEach var="selectWorkListAll" items="${selectWorkListAll}" varStatus="status">
 			<tr>
-					<c:choose>
-						<c:when test="${joinMemberCheck.leaderYn=='Y' || params.adminYn=='Y'}">
-							<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}"></td>
-						</c:when>
-						<c:when test="${params.adminYn=='N' && params.userId==selectWorkListAll.userId}">
-							<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}"></td>
-						</c:when>
-						<c:otherwise>
-							<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}" disabled="true"></td>
-						</c:otherwise>
-					</c:choose>
+
+					<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}"></td>
 					<td>${params.currentpageDB=params.currentpageDB+1}</td>
 					<td><a href="#" data-toggle="modal" data-target="#updateWorkListModal" onclick="updateWorkListModalView(${selectWorkListAll.workNo})">${selectWorkListAll.workNum}</a></td>
 					<td>${selectWorkListAll.workSubject}</td>

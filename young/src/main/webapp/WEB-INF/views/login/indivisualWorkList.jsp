@@ -37,7 +37,7 @@ function go_multicancel(){
 }
 function go_multicomplete(){
 	$('#mes').val("업무 완료");
-	alert($('input:checkbox[name=checkbox]:checked').val());
+
 	var frm =document.getElementById('userindivisualForm');
 		if($('input:checkbox[name=checkbox]:checked').length>0){
  	  		var retVal = confirm("정말로 완료 하시겠습니까?");
@@ -49,24 +49,27 @@ function go_multicomplete(){
  			alert("완료할 업무를 하나 이상 선택하십시오.");
  		}
 }
-function workCancel(workNo){
+function workCancel(workNo,projectNo){
 	$('#mes').val("취소 완료");
 	$('#workNo').val(workNo);
+	$('#projectNo').val(projectNo);
 	var frm=document.getElementById('userindivisualForm');
  		var retVal = confirm("정말로 취소 하시겠습니까?");
  		if(retVal){
- 			frm.action="/project/workCancel.do";
+ 			frm.action="/project/cancelUserWorkList.do";
  			frm.submit();
  		}
 }
-function workComplete(workNo){
+function workComplete(workNo,projectNo){
 	$('#mes').val("업무 완료");
 	$('#workNo').val(workNo);
-	
+	$('#projectNo').val(projectNo);
 	var frm=document.getElementById('userindivisualForm');
- 	frm.action="/project/workComplete.do";
- 	frm.submit();
-
+	var retVal = confirm("정말로 완료 하시겠습니까?");
+		if(retVal){
+		 	frm.action="/project/completeUserWorkList.do";
+		 	frm.submit();
+		}
 }
 
 function updateUserWorkListModalView(workNo,projectNo){
@@ -80,6 +83,11 @@ function updateUserWorkListModalView(workNo,projectNo){
  		success: function(data){
  		 	$("#updateWorkListModalId").empty();
  		 	$("#updateWorkListModalId").append(data);
+ 		 	$("#historybtn").hide();
+ 	 	 if($('input[name=gibonId]').val()!=$('input[name=userId]').val() && $('input[name=adminYn]').val()=="N"){
+	 		$("#updateWorkListModalId input").attr("readonly",true);
+	 		$("#updateWorkListModalId textarea").attr("readonly",true);
+	 	} 
  		}
  	});
 }
@@ -93,6 +101,8 @@ function updateUserWorkListModalView(workNo,projectNo){
 					${params.searchOption1 eq "1" ? "selected" : ""}>업무번호</option>
 				<option value="2"
 					${params.searchOption1 eq "2" ? "selected" : ""}>업무명</option>
+				<option value="3"
+					${params.searchOption1 eq "3" ? "selected" : ""}>프로젝트명</option>
 		</select> 
 		<input name="searchkeyword1" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword1}" onkeypress="if(event.keyCode==13){searchWork1();}" />
 			<button class="btn btn-primary" type="button" onclick="searchWork1()">검색</button>
@@ -103,7 +113,16 @@ function updateUserWorkListModalView(workNo,projectNo){
 	role="grid" width="100%" cellspacing="0">
 	<thead>
 		<tr>
-			<th><input type="checkbox" name="allcheckbox" onclick="allclick();" /></th>
+			<th>
+			<c:choose>
+			<c:when test="${selectMemberinfo.userId==params.userId || params.adminYn=='Y'}">
+				<input type="checkbox" name="allcheckbox" onclick="allclick();" />
+			</c:when>
+			<c:otherwise>
+				<input type="checkbox" name="checkbox" name="allcheckbox" onclick="allclick();" disabled="true">
+			</c:otherwise>
+			</c:choose>
+			</th>
 			<th>순번</th>
 			<th>프로젝트명</th>
 			<th>업무번호</th>
@@ -112,7 +131,7 @@ function updateUserWorkListModalView(workNo,projectNo){
 			<th>진행자</th>
 			<th>진행상태</th>
 			<c:choose>
-				<c:when test="${joinMemberCheck.userId!=null || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
+				<c:when test="${selectMemberinfo.userId==params.userId || params.adminYn=='Y'}">
 					<th>취소</th>
 					<th>완료</th>
 				</c:when>
@@ -125,7 +144,6 @@ function updateUserWorkListModalView(workNo,projectNo){
 				<c:choose>
 					<c:when test="${params.adminYn=='Y'}">
 						<td><input type="checkbox" name="checkbox" value="${userWorkList.workNo},${userWorkList.projectNo}"></td>
-						<input type="hidden" name="projectNo" id="projectNo"  value="${userWorkList.projectNo}"/>
 					</c:when>
 					<c:when test="${params.adminYn=='N' && params.userId==userWorkList.userId}">
 						<td><input type="checkbox" name="checkbox" value="${userWorkList.workNo}"></td>
@@ -144,21 +162,21 @@ function updateUserWorkListModalView(workNo,projectNo){
 				<td>${userWorkList.state}</td>
 				<c:choose>
 					<c:when
-						test="${userWorkList.userId==params.userId || joinMemberCheck.leaderYn=='Y'|| params.adminYn=='Y'}">
+						test="${userWorkList.userId==params.userId || params.adminYn=='Y'}">
 						<c:choose>
 							<c:when
-								test="${joinMemberCheck.leaderYn=='Y' || params.adminYn=='Y'}">
+								test="${params.adminYn=='Y'}">
 								<td><a href="#checklist"
-									onclick="workCancel(${userWorkList.workNo})">취소하기</a></td>
+									onclick="workCancel(${userWorkList.workNo},${userWorkList.projectNo})">취소하기</a></td>
 								<td><a href="#checklist"
-									onclick="workComplete(${userWorkList.workNo})">완료하기</a></td>
+									onclick="workComplete(${userWorkList.workNo},${userWorkList.projectNo})">완료하기</a></td>
 							</c:when>
 							<c:when
 								test="${params.adminYn=='N' && params.userId==userWorkList.userId}">
 								<td><a href="#checklist"
-									onclick="workCancel(${userWorkList.workNo})">취소하기</a></td>
+									onclick="workCancel(${userWorkList.workNo},${userWorkList.projectNo})">취소하기</a></td>
 								<td><a href="#checklist"
-									onclick="workComplete(${userWorkList.workNo})">완료하기</a></td>
+									onclick="workComplete(${userWorkList.workNo},${userWorkList.projectNo})">완료하기</a></td>
 							</c:when>
 						</c:choose>
 					</c:when>
@@ -208,7 +226,7 @@ function updateUserWorkListModalView(workNo,projectNo){
 	</div>
 </div>
 <div class="col-sm-12">
-	<c:if test="${ joinMemberCheck.userId==params.userId || params.adminYn=='Y'}">
+	<c:if test="${selectMemberinfo.userId==params.userId || params.adminYn=='Y'}">
 		<button class="btn btn-primary" type="button" onclick="go_multicomplete()">완료</button>
 		<button class="btn btn-default" type="button" onclick="go_multicancel()">취소</button>
 	</c:if>
@@ -219,7 +237,7 @@ function updateUserWorkListModalView(workNo,projectNo){
 <div class="modal fade" id="updateWorkListModal">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
+      <div id="header" class="modal-header">
       	<h4 class="modal-title">업무 수정</h4>
         <button type="button" class="close" data-dismiss="modal" ><span>x</span></button>
       </div>
@@ -236,4 +254,4 @@ function updateUserWorkListModalView(workNo,projectNo){
 </div>
 <!-- updateWorkListModal -->
 <input type="hidden" name="workNo" id="workNo" />
-
+<input type="hidden" name="projectNo" id="projectNo" />

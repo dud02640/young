@@ -12,18 +12,38 @@ function searchWork(pIndex){
 		success: function(data){
 			/* location.reload(); */
 			$("#userHistoryId").empty();
-			$("#userHistoryId").append(data);	
+			$("#userHistoryId").append(data);
 		}
 	}); 
 }
+function updateHistory(workNo,projectNo){
+	
+	$("#workNo").val(workNo);
+	$("#projectNo").val(projectNo);
+	
+ 	var frm =$("#userindivisualForm").serialize();/* document.getElementById('projectDetailForm'); */
+ 	$.ajax({
+ 		type:"POST",
+ 		url:"/project/updateUserWorkListModalView.do",
+ 		data: frm,
+ 		success: function(data){
+ 		 	$("#updateWorkListModalId").empty();
+ 		 	$("#updateWorkListModalId").append(data);
+ 		 	$("#btn").hide();
+ 		 	$("#header").hide();
+ 		 	$("#updateWorkListModalId input").attr("readonly",true);
+	 		$("#updateWorkListModalId textarea").attr("readonly",true);
+ 		}
+ 	});
+}
 </script>
-
 		<div class="col-md-6">
                 <div class="input-group-btn">
            		<span class="input-group-btn"> 
 				<select class="form-control" name="searchOption">
 						<option value="1" ${params.searchOption eq "1" ? "selected" : ""}>업무번호</option>
 						<option value="2" ${params.searchOption eq "2" ? "selected" : ""}>업무명</option>
+						<option value="3" ${params.searchOption eq "3" ? "selected" : ""}>프로젝트명</option>
 				</select> 
                 <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchWork();}"/>
                 <button class="btn btn-primary" type="button" onclick="searchWork()">검색</button>
@@ -64,7 +84,7 @@ function searchWork(pIndex){
 					</c:choose> --%>
 					<td>${params.currentpageDB=params.currentpageDB+1}</td>
 					<td>${userHistory.projectName}</td>
-					<td><a href="#" data-toggle="modal" data-target="#updateWorkListModal" onclick="updateWorkListModalView(${userHistory.workNo})">${userHistory.workNum}</a></td>
+					<td><a href="#" data-toggle="modal" data-target="#updateWorkListModal" onclick="updateHistory(${userHistory.workNo},${userHistory.projectNo})" data-dismiss="modal">${userHistory.workNum}</a></td>
 					<td>${userHistory.workSubject}</td>
 					<td>${userHistory.startDate} ~ ${userHistory.endDate}</td>
 					<td>${userHistory.state}</td>

@@ -338,7 +338,7 @@ public class loginController {
 		params.put("currentpageDB",currentpageDB*paging);				//0~9,10~19 10개씩 보여준다
 		params.put("startpage",startpage);
 		
-	/*			Map<String,Object> updateListModalPage= projectService.selectupdateListModalPage(params);*/
+		Map<String,Object> selectMemberinfo = loginService.selectMemberinfo(params);
 		List<Map<String,Object>> userWorkList = projectService.userWorkList(params);
 	
 		int userWorkListCnt= projectService.userWorkListCnt(params);			//member 총인원
@@ -362,6 +362,7 @@ public class loginController {
 		params.put("userId",session.getAttribute("userId"));
 		params.put("adminYn",session.getAttribute("adminYn"));
 		
+		model.addAttribute("selectMemberinfo", selectMemberinfo);
 		model.addAttribute("userWorkList",userWorkList);
 		model.addAttribute("params",params);
 		
@@ -374,6 +375,16 @@ public class loginController {
 
 		int pwCheck = loginService.pwCheck(params);
 
+		return Integer.toString(pwCheck);
+	}
+	
+	@RequestMapping(value = "/login/deletePwCheck.do")
+	@ResponseBody
+	public String deletePwCheck(@RequestParam Map<String,Object> params){
+
+		int pwCheck = loginService.pwCheck(params);
+		loginService.deleteMemberinfo(params);
+		
 		return Integer.toString(pwCheck);
 	}
 	

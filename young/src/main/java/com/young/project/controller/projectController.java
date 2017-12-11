@@ -414,10 +414,12 @@ public class projectController {
 		HttpSession session = req.getSession();
 		params.put("userId", session.getAttribute("userId"));
 		params.put("adminYn", session.getAttribute("adminYn"));
-		
+
+		Map<String,Object> selectMemberinfo = loginService.selectMemberinfo(params);
 		Map<String,Object> updateWorkListModalView= projectService.updateWorkListModalView(params);
 		
 		mav.addObject("params", params);
+		mav.addObject("selectMemberinfo", selectMemberinfo);
 		mav.addObject("updateWorkListModalView", updateWorkListModalView);
 		mav.setViewName("/project/updateWorkListModal");
 		return mav;	
@@ -656,6 +658,22 @@ public class projectController {
 		return "forward:/login/userIndivisualView.do";	
 	}
 	
+	@RequestMapping(value ="/project/cancelUserWorkList.do")
+	public String cancelUserWorkList(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
+		
+		HttpSession session = req.getSession();
+		params.put("userId1", session.getAttribute("userId1"));
+		
+		projectService.workCancel(params);
+
+		String mes=(String) params.get("mes");
+		response.setContentType("text/html; charset=utf-8");
+		PrintWriter out = response.getWriter();
+		out.println("<script>alert('" + mes + "');</script>");
+		out.flush();
+		
+		return "forward:/login/userIndivisualView.do";	
+	}
 	
 	@RequestMapping(value ="/project/medo.do")
 	public String medo(HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response,Model model) throws IOException{
