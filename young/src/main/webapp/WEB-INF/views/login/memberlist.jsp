@@ -141,6 +141,7 @@ $(function(){
 										</tr>
 									</thead>
 									<tbody>
+									<c:if test="${membercnt>0}">
 									<c:forEach var="list" items="${memberlist}" varStatus="status">
 										<tr>
 											<td>
@@ -171,6 +172,10 @@ $(function(){
 											<td>${list.createDate}</td>
 										</tr>
 										</c:forEach>
+										</c:if>
+										<c:if test="${membercnt<=0}">
+											<td colspan="9" style="text-align:center">검색한 결과가 없습니다.</td>
+										</c:if>
 										<input type="hidden" name="userId" value="">
 										<input type="hidden" name="checklength" value="">
 									</tbody>

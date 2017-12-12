@@ -1,5 +1,6 @@
 package com.young.login.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.young.join.service.joinService;
@@ -107,7 +109,8 @@ public class loginController {
 		params.put("currentpage", currentpage);
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
-
+		
+		model.addAttribute("membercnt", membercnt);
 		model.addAttribute("params",params);
 		model.addAttribute("memberlist",memberlist);
 		
@@ -259,8 +262,6 @@ public class loginController {
 		params.put("startpage",startpage);
 		
 		List<Map<String,Object>> indivisualView = loginService.indivisualView(params);
-		List<Map<String,Object>> iVproject = projectService.iVproject(params);
-		List<Map<String,Object>> iVwork = projectService.iVwork(params);		
 
 		int indivisualViewCnt= loginService.indivisualViewCnt(params);			//member 총인원
 
@@ -275,17 +276,16 @@ public class loginController {
 		params.put("currentpage", currentpage);
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
-
-		model.addAttribute("iVwork",iVwork);
+		
+		model.addAttribute("indivisualViewCnt", indivisualViewCnt);
 		model.addAttribute("params",params);
-		model.addAttribute("iVproject",iVproject);
 		model.addAttribute("indivisualView",indivisualView);
 		
 		return "/login/indivisual";
 	}
 	@RequestMapping(value = "/login/userIndivisualView.do")
 	public String userIndivisualView(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model){
-		System.out.println("2@@@@@"+params);
+		System.out.println("@@@@@"+params);
 		HttpSession session = req.getSession();
 		session.setAttribute("getuserId", req.getParameter("gibonId"));
 
@@ -362,6 +362,7 @@ public class loginController {
 		params.put("userId",session.getAttribute("userId"));
 		params.put("adminYn",session.getAttribute("adminYn"));
 		
+		model.addAttribute("userWorkListCnt", userWorkListCnt);
 		model.addAttribute("selectMemberinfo", selectMemberinfo);
 		model.addAttribute("userWorkList",userWorkList);
 		model.addAttribute("params",params);
@@ -453,12 +454,21 @@ public class loginController {
 		
 	/*			model.addAttribute("joinMemberCheck", joinMemberCheck);*/
 	/*			model.addAttribute("updateListModalPage", updateListModalPage);*/	
-		
+		model.addAttribute("userHistoryCnt", userHistoryCnt);
 		model.addAttribute("params",params);
 		model.addAttribute("userHistory",userHistory);
 		
 		return "/login/userHistoryModal";
 	}
-	
+	@RequestMapping(value = "/login/saveImg.do")
+	public String saveImg(@RequestParam("userImage") MultipartFile file,@RequestParam Map<String,Object> params,Model model) {
+		System.out.println("@@@@"+file.getOriginalFilename());
+		File f =new File("C:\\data\\"+ file.getOriginalFilename());
+		System.out.println("@@@@@"+f);
+		params.put("userImage", f);
+		loginService.insertSaveImg(params);
+		
+		return "forward:/login/indivisualView.do";
+	}
 	
 }

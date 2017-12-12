@@ -253,11 +253,16 @@ function checkPhone(){
 	  			},
 	  		});
 	} 
+ 	function saveImg(){
+ 		var frm = document.getElementById('userindivisualForm');
+		frm.action="/login/saveImg.do";
+	  	frm.submit();
+ 	}
 
 </script>
 </head>
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
-	<form name="userindivisualForm" id="userindivisualForm" method="post">
+	<form name="userindivisualForm" id="userindivisualForm" method="post" enctype="multipart/form-data">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
 		<div class="input-group">
 			<a class="navbar-brand" href="/project/main.do">Code-Farm 현황판</a> <label
@@ -308,7 +313,8 @@ function checkPhone(){
 					<div class="card-body bg-faded">
 						<div class="row">
 							<div class="media">
-								<img whidth="200" height="200" src="/css/noimg.PNG">
+								<img whidth="200" height="200" src="${userInfo.userImage}">
+								<input type="file" name="userImage"/><button type="button" onclick="saveImg()">저장</button>
 								<div class="media-body">
 									<ul class="list-inline mb-0">>개인정보	</ul>
 									<ul class="list-inline mb-0">이름 : ${userInfo.userName}</ul>
@@ -534,9 +540,8 @@ function checkPhone(){
 								style="color: red" id="phN_message"></label>
 							<div class="form-row">
 								<div class="btn-group">
-									<button name="updateMember" id="insertMember"
-										class="btn btn-primary " onclick="go_update()">수정</button>
-										<button name="deleteMember" id="deleteMember" class="btn btn-primary " onclick="go_delete()">탈퇴</button>
+									<button type="button" name="updateMember" id="insertMember" class="btn btn-primary " onclick="go_update()">수정</button>
+										<button type="button" name="deleteMember" id="deleteMember" class="btn btn-primary " onclick="go_delete()">탈퇴</button>
 								</div>
 							</div>
 							<div class="modal-footer">

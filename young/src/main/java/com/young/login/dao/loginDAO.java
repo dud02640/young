@@ -103,4 +103,19 @@ public class loginDAO extends AbstractDAO{
 		return (int) selectOne("login.userHistoryCnt",params);
 	}
 
+	public List<Map<String, Object>> selectWorkJoinList(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return selectList("login.selectWorkJoinList",params);
+	}
+
+	public int selectWorkJoinListCnt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return (int) selectOne("login.selectWorkJoinListCnt",params);
+	}
+
+	public void insertSaveImg(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		insert("login.insertSaveImg",params);
+	}
+
 }

@@ -59,7 +59,7 @@ function workCancel(workNo){
  			frm.submit();
  		}
 }
-function workComplete(workNo){
+function workComplete(workNo,projectNo){
 	$('#mes').val("업무 완료");
 	$('#workNo').val(workNo);
 	
@@ -109,10 +109,12 @@ function updateWorkList(workNo){
 			</tr>
 		</thead>
 		<tbody>
+		<c:if test="${selectWorkListAllCnt>0}">
 			<c:forEach var="selectWorkListAll" items="${selectWorkListAll}" varStatus="status">
 			<tr>
 
 					<td><input type="checkbox" name="checkbox" value="${selectWorkListAll.workNo}"></td>
+					<input type="hidden" name="pN" value="${selectWorkListAll.projectNo}">
 					<td>${params.currentpageDB=params.currentpageDB+1}</td>
 					<td><a href="#" data-toggle="modal" data-target="#updateWorkListModal" onclick="updateWorkListModalView(${selectWorkListAll.workNo})">${selectWorkListAll.workNum}</a></td>
 					<td>${selectWorkListAll.workSubject}</td>
@@ -145,9 +147,14 @@ function updateWorkList(workNo){
 					</c:choose>
 			</tr>
 			</c:forEach>
+			</c:if>
+           	<c:if test="${selectWorkListAllCnt<=0}">
+        		<td colspan="8" style="text-align:center">검색한 결과가 없습니다.</td>
+        	</c:if>
 		</tbody>
 	</table>
 </div>
+<div class="row">  
 	<div class="col-sm-12 col-md-7">
 	<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
 	<ul class="pagination">
@@ -182,5 +189,5 @@ function updateWorkList(workNo){
 		<button class="btn btn-default" type="button" onclick="go_multicancel()">취소</button>
 	</c:if>
 	</div>
-	
+</div>
 	<input type="hidden" name="workNo" id="workNo"/>

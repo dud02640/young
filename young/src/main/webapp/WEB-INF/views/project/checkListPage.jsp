@@ -124,6 +124,7 @@ function mutiDo(){
                 		</tr>
                 	</thead>
                 	<tbody>
+                	<c:if test="${selectCheckListAllCnt>0}">
                 	<c:forEach var="selectCheckListAll" items="${selectCheckListAll}" varStatus="status">
                 		<tr>
                 			<td><input type="checkbox" name="checkbox2" value="${selectCheckListAll.workNo}" /></td>
@@ -151,11 +152,16 @@ function mutiDo(){
 							</c:choose>
                 		</tr>
                 	</c:forEach>
+                	</c:if>
+                	<c:if test="${selectCheckListAllCnt<=0}">
+                	<td colspan="8" style="text-align:center">검색한 결과가 없습니다.</td>
+                	</c:if>
              		</tbody>
                 </table>
               </div>
             </div>
            </div>
+       <div class="row">    
       <!-- 페이징 -->
 		<div class="col-sm-12 col-md-7">
 		<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
@@ -196,6 +202,7 @@ function mutiDo(){
 				</c:if>
 				<button class="btn btn-default" type="button" onclick="go_multidel2()">삭제</button>
 			</c:if>
+		</div>
 		</div>
 		<input type="hidden" name="workNo" id="workNo"/>
 <!-- 		<input type="hidden" name="checkArray" id="checkArray"/> -->

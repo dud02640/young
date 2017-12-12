@@ -99,6 +99,7 @@ public class projectController {
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 		
+		model.addAttribute("selectboardlistcnt", selectboardlistcnt);
 		model.addAttribute("WorkCheckList",WorkCheckList);
 		model.addAttribute("JoinId",JoinId);
 		model.addAttribute("params", params);
@@ -500,8 +501,10 @@ public class projectController {
 		
 		mav.addObject("joinMemberCheck",joinMemberCheck);
 		mav.addObject("updateListModalPage", updateListModalPage);
+		mav.addObject("selectCheckListAllCnt",selectCheckListAllCnt);
 		mav.addObject("params",params);
 		mav.addObject("selectCheckListAll",selectCheckListAll);
+		
 		mav.setViewName("/project/checkListPage");
 		
 		return mav;	
@@ -563,6 +566,7 @@ public class projectController {
 		params.put("endpage",endpage);
 		params.put("endpageNo",endpageNo);
 		
+		mav.addObject("selectWorkListAllCnt", selectWorkListAllCnt);
 		mav.addObject("joinMemberCheck", joinMemberCheck);
 		mav.addObject("updateListModalPage", updateListModalPage);
 		mav.addObject("params",params);
@@ -745,8 +749,8 @@ public class projectController {
 		params.put("startpage",startpage);
 		
 		int joinNum = joinService.joinNum(params);
-		List<Map<String,Object>> joinlist = loginService.selectJoinList(params);
-		int membercnt= loginService.selectJoinCnt(params);			//member 총인원
+		List<Map<String,Object>> joinlist = loginService.selectWorkJoinList(params);
+		int membercnt= loginService.selectWorkJoinListCnt(params);			//member 총인원
 		
 		if(membercnt%paging!=0)							//paging으로 나누었을떄 0 이면 나뉜 페이지 보여줌
 			endpage=membercnt/paging+1;					//맴버 총 수에서 10을 나누고 나머지 페이지
@@ -821,14 +825,15 @@ public class projectController {
 	}
 	
 	@RequestMapping(value ="/project/userWorkMultiCancel.do")
-	public String userWorkMultiCancel(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
+	public String userWorkMultiCancel(@RequestParam("pN")String[] pN,@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
 		
 		HttpSession session = req.getSession();
 		params.put("userId", session.getAttribute("userId"));
 		
-		for(String chk : checkbox) {
-			params.put("workNo", chk);
-			projectService.workCancel(params);
+		for (int i = 0; i < checkbox.length; i++) {
+			params.put("projectNo", pN[i]);
+			params.put("workNo", checkbox[i]);
+			projectService.updateCompleteWorkList(params);
 		}
 
 		String mes=(String) params.get("mes");
@@ -841,37 +846,41 @@ public class projectController {
 	}
 	
 	@RequestMapping(value ="/project/workMultiComplete.do")
-	public String workMultiComplete(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
-		
+	public String workMultiComplete(@RequestParam("pN")String[] pN,@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
 		HttpSession session = req.getSession();
 		params.put("userId", session.getAttribute("userId"));
-		
-		for(String chk : checkbox) {
-			String workProjectNo[]= chk.split(",");
-			params.put("workNo", workProjectNo[0]);
-			params.put("projectNo", workProjectNo[1]);
-			projectService.updateCompleteWorkList(params);
-		}
-
-		String mes=(String) params.get("mes");
-		response.setContentType("text/html; charset=utf-8");
-		PrintWriter out = response.getWriter();
-		out.println("<script>alert('" + mes + "');</script>");
-		out.flush();
-		
-		return "forward:/project/projectDetailView.do";	
+	
+			for (int i = 0; i < checkbox.length; i++) {
+				params.put("projectNo", pN[i]);
+				params.put("workNo", checkbox[i]);
+				projectService.updateCompleteWorkList(params);
+			}
+	//		for() {
+	//			System.out.println("___________________"+chk);
+	//			System.out.println("params____________________"+params);
+	//			params.put("", chk);
+	//			params.put("", hid);
+	//			//projectService.updateCompleteWorkList(params);
+	//		}
+	
+			String mes=(String) params.get("mes");
+			response.setContentType("text/html; charset=utf-8");
+			PrintWriter out = response.getWriter();
+			out.println("<script>alert('" + mes + "');</script>");
+			out.flush();
+			
+			return "forward:/project/projectDetailView.do";	
 	}
 
 	@RequestMapping(value ="/project/userWorkMultiComplete.do")
-	public String userWorkMultiComplete(@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
+	public String userWorkMultiComplete(@RequestParam("pN")String[] pN,@RequestParam("checkbox")String[] checkbox,HttpServletRequest req,@RequestParam Map<String,Object> params, HttpServletResponse response) throws IOException{
 
 		HttpSession session = req.getSession();
 		params.put("userId", session.getAttribute("userId"));
 		
-		for(String chk : checkbox) {
-			String workProjectNo[]= chk.split(",");
-			params.put("workNo", workProjectNo[0]);
-			params.put("projectNo", workProjectNo[1]);
+		for (int i = 0; i < checkbox.length; i++) {
+			params.put("projectNo", pN[i]);
+			params.put("workNo", checkbox[i]);
 			projectService.updateCompleteWorkList(params);
 		}
 

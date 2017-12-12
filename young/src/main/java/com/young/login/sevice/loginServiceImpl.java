@@ -127,4 +127,22 @@ public class loginServiceImpl implements loginService{
 		// TODO Auto-generated method stub
 		return loginDAO.userHistoryCnt(params);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectWorkJoinList(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.selectWorkJoinList(params);
+	}
+
+	@Override
+	public int selectWorkJoinListCnt(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return loginDAO.selectWorkJoinListCnt(params);
+	}
+
+	@Override
+	public void insertSaveImg(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		loginDAO.insertSaveImg(params);
+	}
 }

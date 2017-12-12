@@ -102,6 +102,7 @@ function userIndivisualView(gibonId){
 				<!-- Icon Cards-->
 				<div class="row">
 					<table>
+					<c:if test="${indivisualViewCnt>0}">
 						<c:forEach var="indivisualView" items="${indivisualView}">
 							<div class="col-xl-3 col-sm-6 mb-3">
 								<div class="card text-white o-hidden h-5 bg-info">
@@ -129,7 +130,17 @@ function userIndivisualView(gibonId){
 									</button>
 								</div>
 							</div>
-						</c:forEach>
+							</c:forEach>
+						</c:if>
+						<c:if test="${indivisualViewCnt<=0}">
+							<div class="col-xl-3 col-sm-6 mb-3">
+								<div class="card text-white o-hidden h-5 bg-info">
+									<div class="card-body">
+										검색한 결과가 없습니다.
+									</div>
+								</div>
+							</div>
+						</c:if>
 					</table>
 			</div>
 		<!-- 페이징 -->

@@ -139,11 +139,12 @@ function updateUserWorkListModalView(workNo,projectNo){
 		</tr>
 	</thead>
 	<tbody>
+	<c:if test="${userWorkListCnt>0}">
 		<c:forEach var="userWorkList" items="${userWorkList}" varStatus="status">
 			<tr>
 				<c:choose>
 					<c:when test="${params.adminYn=='Y'}">
-						<td><input type="checkbox" name="checkbox" value="${userWorkList.workNo},${userWorkList.projectNo}"></td>
+						<td><input type="checkbox" name="checkbox" value="${userWorkList.workNo}"></td>
 					</c:when>
 					<c:when test="${params.adminYn=='N' && params.userId==userWorkList.userId}">
 						<td><input type="checkbox" name="checkbox" value="${userWorkList.workNo}"></td>
@@ -152,6 +153,7 @@ function updateUserWorkListModalView(workNo,projectNo){
 						<td><input type="checkbox" name="checkbox" value="${userWorkList.workNo}" disabled="true"></td>
 					</c:otherwise>
 				</c:choose>
+				<input type="hidden" name="pN" value="${userWorkList.projectNo}"/>
 				<td>${params.currentpageDB=params.currentpageDB+1}</td>
 				<td>${userWorkList.projectName}</td>
 				<input type="hidden" name="projectName" value="${userWorkList.projectName}"/>
@@ -183,6 +185,10 @@ function updateUserWorkListModalView(workNo,projectNo){
 				</c:choose>
 			</tr>
 		</c:forEach>
+		</c:if>
+		<c:if test="${userWorkListCnt<=0}">
+			<td colspan="10" style="text-align:center">검색한 결과가 없습니다.</td>
+		</c:if>
 	</tbody>
 </table>
 

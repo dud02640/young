@@ -18,29 +18,41 @@
 					when p.projectState='bg-success' then "완료"
 				end as projectStateName,
 				p.projectState as projectState,
-				p.projectDeleteYn as projectDeleteYn
+				p.projectDeleteYn as projectDeleteYn,
+				group_concat(
+                case j.leaderYn 
+                when "Y" then m.userName
+                end )as leaderName,
+                group_concat(userName) as memberName,
+				ifnull((select truncate(count(case when state="진행완료" then 1 end)/count(*)*100,0)
+				   from workchecklist w
+				  where p.projectNo=w.projectNo
+				  group by projectNo), 0) as persent
 		  from project p
-		  where projectDeleteYn="N"
-		  <if test="searchkeyword != null or searchkeyword != '' "> 
+          left outer join  joinm j
+            on p.projectNo=j.projectNo
+		  left outer join member m
+            on j.userId=m.userId
+		 where projectDeleteYn="N"
+           and userDeleteYn="N"
 			 <choose>
 			 	<when test="searchOption1==1">and projectName like concat('%',#{searchkeyword},'%')</when>
 			 	<when test="searchOption1==2">and institutionName like concat('%',#{searchkeyword},'%')</when>
 			 </choose>
 			<choose> 
-				 <when test="searchOption2==0"></when>
 				 <when test="searchOption2==1">and projectState ="bg-primary"</when>
 				 <when test="searchOption2==2">and projectState ="bg-warning"</when>
 				 <when test="searchOption2==3">and projectState ="bg-danger"</when>
 				 <when test="searchOption2==4">and projectState ="bg-success"</when>
 			</choose>
-		 </if>
+         group by p.projectNo
 		 order by (case projectState
 		 		   when "bg-danger" then 1
 		 		   when "bg-warning" then 2
 		 		   when "bg-primary" then 3
 		 		   when "bg-success" then 4
 		 		   end
-		 		   )
+		 		   )   
 		limit #{currentpageDB},#{paging}
 				 
 	</select>
@@ -48,19 +60,16 @@
 	   SELECT count(*)
 		 FROM project 
 		where projectDeleteYn="N"
- 		<if test="searchkeyword != null or searchkeyword != '' "> 
 			 <choose>
 			 	<when test="searchOption1==1">and projectName like concat('%',#{searchkeyword},'%')</when>
 			 	<when test="searchOption1==2">and institutionName like concat('%',#{searchkeyword},'%')</when>
 			 </choose>
 			<choose> 
-				 <when test="searchOption2==0"></when>
 				 <when test="searchOption2==1">and projectState ="bg-primary"</when>
 				 <when test="searchOption2==2">and projectState ="bg-warning"</when>
 				 <when test="searchOption2==3">and projectState ="bg-danger"</when>
 				 <when test="searchOption2==4">and projectState ="bg-success"</when>
 			</choose>
-		 </if>
 	</select>
 	<insert id="insertProject" parameterType="hashmap">
 		<selectKey resultType="int" keyProperty="seq"> 
@@ -331,16 +340,14 @@
 		  from workchecklist
 		 where projectNo=#{projectNo}
 		   and (state="신규" or state="진행완료")
-		  <if test="searchkeyword2 != null or searchkeyword2 != '' "> 
 			 <choose>
-			 	<when test="searchOption==1">and workNum like concat('%',#{searchkeyword2},'%')</when>
-			 	<when test="searchOption==2">and workSubject like concat('%',#{searchkeyword2},'%')</when>
+			 	<when test="searchOption1==1">and workNum like concat('%',#{searchkeyword2},'%')</when>
+			 	<when test="searchOption1==2">and workSubject like concat('%',#{searchkeyword2},'%')</when>
 			 </choose>
 			 <choose>
 			 	<when test="searchOption2==1">and state = "신규"</when>
 			 	<when test="searchOption2==2">and state = "진행완료"</when>
 			 </choose>
-		 </if>
 	</select>
 	<update id="medo" parameterType="hashmap">
 			 update workchecklist

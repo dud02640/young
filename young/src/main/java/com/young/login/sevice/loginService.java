@@ -44,4 +44,10 @@ public interface loginService {
 
 	int userHistoryCnt(Map<String, Object> params);
 
+	List<Map<String, Object>> selectWorkJoinList(Map<String, Object> params);
+
+	int selectWorkJoinListCnt(Map<String, Object> params);
+
+	void insertSaveImg(Map<String, Object> params);
+
 }

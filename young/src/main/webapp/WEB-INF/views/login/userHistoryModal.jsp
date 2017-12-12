@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script>
+$(function(){
+	  $('form').submit(function() {return false;});
+});
 function searchWork(pIndex){
 	$('input[name=selectPage]').val(pIndex);
 	
@@ -45,7 +48,7 @@ function updateHistory(workNo,projectNo){
 						<option value="2" ${params.searchOption eq "2" ? "selected" : ""}>업무명</option>
 						<option value="3" ${params.searchOption eq "3" ? "selected" : ""}>프로젝트명</option>
 				</select> 
-                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchWork();}"/>
+                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchWork()}"/>
                 <button class="btn btn-primary" type="button" onclick="searchWork()">검색</button>
                 </span>
 				</div>	
@@ -69,6 +72,7 @@ function updateHistory(workNo,projectNo){
 			</tr>
 		</thead>
 		<tbody>
+		<c:if test="${userHistoryCnt>0}">
 			<c:forEach var="userHistory" items="${userHistory}" varStatus="status">
 			<tr>
 <%-- 					<c:choose>
@@ -90,6 +94,10 @@ function updateHistory(workNo,projectNo){
 					<td>${userHistory.state}</td>
 			</tr>
 			</c:forEach>
+			</c:if>
+			<c:if test="${userHistoryCnt<=0}">
+				<td colspan="6" style="text-align:center">검색한 결과가 없습니다.</td>
+			</c:if>
 		</tbody>
 	</table>
 

@@ -149,6 +149,7 @@ function searchMember(pIndex){
 				<!-- Icon Cards-->
 				<div class="row">
 					<table>
+					<c:if test="${selectboardlistcnt>0}">
 						<c:forEach var="list" items="${list}">
 							<div class="col-xl-3 col-sm-6 mb-3">
 								<div class="card text-white o-hidden h-5 ${list.projectState}">
@@ -160,38 +161,10 @@ function searchMember(pIndex){
 										<div class="mr-3">프로젝트명[상태]:${list.projectName} 
 										[${list.projectStateName}]</div>
 										<div class="mr-3">기관명:${list.institutionName}</div>
-										<div class="mr-3">팀장:
-											<c:forEach var="JoinId" items="${JoinId}">
-											<c:choose>
-												<c:when test="${JoinId.joinProjectNo == list.projectNo and JoinId.leaderYn eq 'Y'}">
-													${JoinId.userName} 
-												</c:when>
-											</c:choose>
-											</c:forEach>
-										</div>
-										<div class="mr-3">팀원:
-										<c:forEach var="JoinId" items="${JoinId}">
-											<c:choose>
-												<c:when test="${JoinId.joinProjectNo == list.projectNo}">
-													${JoinId.userName}
-												</c:when>
-											</c:choose>
-										</c:forEach>
-										</div>
-										<div class="mr-3">진행률:
-										<c:forEach var="WorkCheckList" items="${WorkCheckList}">
-											<c:choose>
-											<c:when test="${list.projectNo == WorkCheckList.projectNo}">
-												${WorkCheckList.persent} %
-											</c:when>
-											</c:choose>
-										</c:forEach>
-										<c:if test="${list.projectNo==null}">
-										0%
-										</c:if>
-										</div>
-										<div class="mr-3">개발기간 : ${list.projectStartDate} ~
-											${list.projectEndDate}</div>
+										<div class="mr-3">팀장: ${list.leaderName}</div>
+										<div class="mr-3">팀원: ${list.memberName}</div>
+										<div class="mr-3">진행률: ${list.persent} %</div>
+										<div class="mr-3">개발기간 : ${list.projectStartDate} ~ ${list.projectEndDate}</div>
 									</div>
 									<button class="card-footer text-white clearfix small z-1" onclick="projectDetailView('${list.projectNo}');">
 										<span class="float-left">자세히</span> <span class="float-right">
@@ -201,6 +174,16 @@ function searchMember(pIndex){
 								</div>
 							</div>
 						</c:forEach>
+						</c:if>
+						<c:if test="${selectboardlistcnt<=0}">	
+							<div class="col-xl-3 col-sm-6 mb-3">
+								<div class="card text-white o-hidden h-5 bg-info">
+									<div class="card-body">
+										검색한 결과가 없습니다.
+									</div>
+								</div>
+							</div>
+						</c:if>
 					</table>
 			</div>
 		<!-- 페이징 -->

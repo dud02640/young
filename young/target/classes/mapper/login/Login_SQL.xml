@@ -100,6 +100,40 @@
 	</select>
 	<!-- join페이징 -->
 	
+	<select id ="selectWorkJoinList" parameterType="hashmap" resultType="hashmap">
+		 SELECT m.userId as loginUserId,
+				m.userName as loginUserName,
+				j.userId as joinUserId,
+				j.projectNo as joinProjectNo,
+				j.leaderYn as leaderYn
+		   FROM MEMBER m
+		   right outer join joinm j
+           on (m.userId = j.userId and j.projectNo=#{projectNo})
+		  where m.userDeleteYn="N"
+		    and m.adminYn ="N"
+		  <if test="searchkeyword != null"> <!-- 우선 or 로 빈칸체크 안됨 -->
+			and ((m.userName like concat('%',#{searchkeyword},'%') or m.userId like concat('%',#{searchkeyword},'%'))
+		  </if>
+  		  order by (case leaderYn
+			  			when "Y" then 1
+	                    when "N" then 2
+	                    else 3
+                    end)
+		  limit #{currentpageDB},#{paging};
+	</select>	
+	<select id ="selectWorkJoinListCnt" parameterType="hashmap" resultType="int">
+	     select count(*) 
+	       from joinm j
+	      right outer join member m
+	         on j.userId=m.userId
+		  where projectNo=#{projectNo}
+	        and userDeleteYn="N"
+	        and adminYn="N";
+ 		<if test="searchkeyword != null"> 
+			and ((userName like concat('%',#{searchkeyword},'%') or userId like concat('%',#{searchkeyword},'%'))
+		</if>
+	</select>
+	
 	<select id ="selectMemberCnt" parameterType="hashmap" resultType="int">
 	   SELECT count(*)
 		 FROM MEMBER 
@@ -172,8 +206,8 @@
 		<if test="searchkeyword != null || searchkeyword != '' "> 
 			 <choose>
 			 	<when test="searchOption==1">and userName like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==2">and userPosition like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==3">and userRank like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and userRank like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">and userPosition like concat('%',#{searchkeyword},'%')</when>
 			 </choose> 
 		 </if>
 		 GROUP  BY M.USERID
@@ -188,8 +222,8 @@
 		<if test="searchkeyword != null || searchkeyword != '' "> 
 			 <choose>
 			 	<when test="searchOption==1">and userName like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==2">and userPosition like concat('%',#{searchkeyword},'%')</when>
-			 	<when test="searchOption==3">and userRank like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==2">and userRank like concat('%',#{searchkeyword},'%')</when>
+			 	<when test="searchOption==3">and userPosition like concat('%',#{searchkeyword},'%')</when>
 			 </choose> 
 		 </if>
 	</select>
@@ -257,4 +291,10 @@
 			 </choose>
 		 </if>
 	</select>
+	<insert id="insertSaveImg" parameterType="hashmap">
+		update member
+		   set userImage=#{userImage}
+		 where userId=#{gibonId}
+	</insert>
+
 </mapper>
