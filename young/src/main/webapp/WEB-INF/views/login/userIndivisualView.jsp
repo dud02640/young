@@ -301,10 +301,9 @@ function checkPhone(){
 				<ol class="breadcrumb">
 					<li class="breadcrumb-item">${userInfo.userRank}</li>
 					<li class="breadcrumb-item active">${userInfo.userName}</li>
-					<c:if
-						test="${params.adminYn=='Y' || params.userId eq userInfo.userId }">
+					<c:if test="${params.adminYn=='Y' || params.userId eq userInfo.userId }">
 						<!-- 관리자인지 아닌지 자기자신인지 아닌지 -->
-						<li>
+						<li class="col">
 							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#optionModal">설정</button>
 						</li>
 					</c:if>
@@ -313,8 +312,9 @@ function checkPhone(){
 					<div class="card-body bg-faded">
 						<div class="row">
 							<div class="media">
-								<img whidth="200" height="200" src="${userInfo.userImage}">
-								<input type="file" name="userImage"/><button type="button" onclick="saveImg()">저장</button>
+								<div class="media-header col">
+									<img whidth="200" height="200" src="${userInfo.userImage}">
+								</div>
 								<div class="media-body">
 									<ul class="list-inline mb-0">>개인정보	</ul>
 									<ul class="list-inline mb-0">이름 : ${userInfo.userName}</ul>
@@ -323,15 +323,20 @@ function checkPhone(){
 									<ul class="list-inline mb-0">이메일 : ${userInfo.userEmail}</ul>
 									<ul class="list-inline mb-0">전화번호:	${userInfo.userPhoneNumber}</ul>
 									<ul class="list-inline mb-0"></ul>
-									<ul class="list-inline mb-0">>진행중인 프로젝트</ul>
-									<c:forEach var="userProjectInfo" items="${userProjectInfo}" >
-										<li>${userProjectInfo.projectName}</li>
-									</c:forEach>
-									
+																
+								</div>
+								<div class="media-footer col">
+								<ul class="list-inline mb-0">>진행중인 프로젝트</ul>	
+								<c:forEach var="userProjectInfo" items="${userProjectInfo}" >
+									<li>${userProjectInfo.projectName}</li>
+								</c:forEach>
+								<!-- <input type="file" name="userImage" accept=".gif, .jpg, .png"/><button type="button" onclick="saveImg()">저장</button> -->
 								</div>
 							</div>
 						</div>
-						<div class="row"></div>
+						<div class="row">
+						
+						</div>
 						<div class="row">
 							<div class="col-sm-12 col-md-7"></div>
 						</div>
@@ -340,7 +345,11 @@ function checkPhone(){
 				
 				<div class="card mb-3">
 					<div class="card-body bg-faded">
-						<div class="row">개인 업무 진행 리스트</div>
+						<div class="row">
+							<div class="col-sm-12 col-md-12">
+								<h5>개인 업무 진행 리스트</h5>
+							</div>
+						</div>
 						<div id="userworklist">
 
 
@@ -387,7 +396,7 @@ function checkPhone(){
 		<!-- optionModal -->
 
 		<!-- pwCheckModal -->
-		<div class="modal fade" id="pwCheck">
+		<div class="modal fade" id="pwCheck" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">

@@ -1,5 +1,7 @@
 package com.young.login.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -8,11 +10,15 @@ import java.text.DateFormat;
 import java.util.*;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.swing.JOptionPane;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
+import org.imgscalr.Scalr.Mode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -25,7 +31,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.young.join.service.joinService;
 import com.young.login.sevice.loginService;
@@ -287,9 +295,11 @@ public class loginController {
 	public String userIndivisualView(HttpServletRequest req,@RequestParam Map<String,Object> params,Model model){
 		System.out.println("@@@@@"+params);
 		HttpSession session = req.getSession();
+/*		
 		session.setAttribute("getuserId", req.getParameter("gibonId"));
+		session.getAttribute("getuserId")==null*/
 
-		if(session.getAttribute("getuserId")==null) {
+		if(params.get("gibonId")==null) {
 			return "forward:/login/indivisualView.do";
 		}else {
 			Map<String,Object> userInfo = loginService.userInfo(params);
@@ -461,14 +471,34 @@ public class loginController {
 		return "/login/userHistoryModal";
 	}
 	@RequestMapping(value = "/login/saveImg.do")
-	public String saveImg(@RequestParam("userImage") MultipartFile file,@RequestParam Map<String,Object> params,Model model) {
-		System.out.println("@@@@"+file.getOriginalFilename());
-		File f =new File("C:\\data\\"+ file.getOriginalFilename());
-		System.out.println("@@@@@"+f);
-		params.put("userImage", f);
-		loginService.insertSaveImg(params);
+	public String saveImg(SessionStatus status,HttpServletRequest req,@RequestParam("userImage") MultipartFile file,@RequestParam Map<String,Object> params) throws IllegalStateException, IOException {
 		
-		return "forward:/login/indivisualView.do";
+		System.out.println("#############"+params);
+		
+		String root_path= req.getSession().getServletContext().getRealPath("/");
+		System.out.println(root_path);
+		String path=root_path+"data\\"+ file.getOriginalFilename();
+		String db_url="/data/"+file.getOriginalFilename();
+		
+		File f =new File(path);
+/*		BufferedImage img = ImageIO.read(f);
+		BufferedImage thumbImg=Scalr.resize(img,Method.QUALITY,Mode.AUTOMATIC,50,50,Scalr.OP_ANTIALIAS);
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		ImageIO.write(thumbImg, "jpg",os);
+		File f1 =new File(root_path+"data\\"+ file.getOriginalFilename());
+		ImageIO.write(thumbImg, "jpg",f1);*/
+		
+		try {
+			file.transferTo(f);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		params.put("userImage",  db_url);
+		loginService.insertSaveImg(params);
+				
+		status.setComplete();
+		return "forward:/login/userIndivisualView.do";
 	}
 	
 }

@@ -2790,7 +2790,9 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 }
 
 .fade.show {
-	opacity: 1
+	opacity: 1;
+	overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .collapse {
@@ -4935,7 +4937,10 @@ button.close {
 }
 
 .modal-open {
-	overflow: hidden
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
 }
 
 .modal {
@@ -8067,15 +8072,4 @@ a.text-dark:focus, a.text-dark:hover {
 	visibility: hidden !important
 }
 
-#optionModalupdate {
-  overflow: auto;
-}
-
-#optionModalInsertMember {
-  overflow: auto;
-}
-
-#optionModal {
-  overflow: auto;
-}
 /*# sourceMappingURL=bootstrap.min.css.map */

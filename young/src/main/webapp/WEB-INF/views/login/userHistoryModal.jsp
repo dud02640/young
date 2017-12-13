@@ -43,19 +43,20 @@ function updateHistory(workNo,projectNo){
 		<div class="col-md-6">
                 <div class="input-group-btn">
            		<span class="input-group-btn"> 
-				<select class="form-control" name="searchOption">
+				<select class="form-control" name="searchOption" >
 						<option value="1" ${params.searchOption eq "1" ? "selected" : ""}>업무번호</option>
 						<option value="2" ${params.searchOption eq "2" ? "selected" : ""}>업무명</option>
 						<option value="3" ${params.searchOption eq "3" ? "selected" : ""}>프로젝트명</option>
 				</select> 
-                <input name="searchkeyword" class="form-control" type="text" maxlength="30" placeholder="" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchWork()}"/>
+                <input name="searchkeyword" class="form-control" type="text" maxlength="30" style="width: 300px;" value="${params.searchkeyword}" onkeypress="if(event.keyCode==13){searchWork()}"/>
                 <button class="btn btn-primary" type="button" onclick="searchWork()">검색</button>
                 </span>
 				</div>	
-              </div>
+       </div>
+    <div class="col-md-12">
 	<table class="table table-bordered dataTable" id="dataTable" role="grid" width="100%" cellspacing="0">
 		<thead>
-			<tr>
+			<tr class="text-center">
 <!-- 			<th><input type="checkbox" name="allcheckbox" onclick="allclick();"/></th> -->
 			<th>순번</th>
 			<th>프로젝트명</th>
@@ -100,8 +101,8 @@ function updateHistory(workNo,projectNo){
 			</c:if>
 		</tbody>
 	</table>
-
-	<div class="col-sm-12 col-md-7">
+	<div class="row">
+	<div class="col-sm-12 col-md-12">
 	<div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
 	<ul class="pagination">
 		<c:if test="${params.selectPage-1!=0}">
@@ -129,9 +130,11 @@ function updateHistory(workNo,projectNo){
 	</ul>
 	</div>
 	</div>
+	</div>
 	<div class="col-sm-12">
 	<c:if test="${ joinMemberCheck.userId==params.userId || params.adminYn=='Y'}">
 		<button class="btn btn-primary" type="button" onclick="go_multicomplete()">완료</button>
 		<button class="btn btn-default" type="button" onclick="go_multicancel()">취소</button>
 	</c:if>
+	</div>
 	</div>

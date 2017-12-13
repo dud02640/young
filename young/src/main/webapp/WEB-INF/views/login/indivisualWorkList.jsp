@@ -93,6 +93,7 @@ function updateUserWorkListModalView(workNo,projectNo){
 }
 </script>
 <div>
+<div class="row">
 <div class="col-md-6">
 	<div class="input-group-btn">
 		<span class="input-group-btn"> 
@@ -109,10 +110,12 @@ function updateUserWorkListModalView(workNo,projectNo){
 		</span>
 	</div>
 </div>
-<table class="table table-bordered dataTable" id="dataTable"
-	role="grid" width="100%" cellspacing="0">
+</div>
+<div class="row">
+<div class="col-md-12">
+<table class="table table-bordered dataTable" id="dataTable" role="grid" width="100%" cellspacing="0">
 	<thead>
-		<tr>
+		<tr class="text-center">
 			<th>
 			<c:choose>
 			<c:when test="${selectMemberinfo.userId==params.userId || params.adminYn=='Y'}">
@@ -191,8 +194,10 @@ function updateUserWorkListModalView(workNo,projectNo){
 		</c:if>
 	</tbody>
 </table>
-
-<div class="col-sm-12 col-md-7">
+</div>
+</div>
+<div class="row">
+<div class="col-sm-12 col-md-12">
 	<div class="dataTables_paginate paging_simple_numbers"
 		id="dataTable_paginate">
 		<ul class="pagination">
@@ -231,11 +236,13 @@ function updateUserWorkListModalView(workNo,projectNo){
 		</ul>
 	</div>
 </div>
-<div class="col-sm-12">
+<div class="col-sm-12 col-md-12">
 	<c:if test="${selectMemberinfo.userId==params.userId || params.adminYn=='Y'}">
 		<button class="btn btn-primary" type="button" onclick="go_multicomplete()">완료</button>
 		<button class="btn btn-default" type="button" onclick="go_multicancel()">취소</button>
 	</c:if>
+</div>
+</div>
 </div>
 </div>
 
