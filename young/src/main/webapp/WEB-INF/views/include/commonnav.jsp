@@ -9,6 +9,7 @@
 			alert("로그아웃");
 	  		frm.action="/login/logout.do";
 	  		frm.submit();
+	  		
 	}
 </script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
